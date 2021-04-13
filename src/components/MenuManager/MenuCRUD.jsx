@@ -1,24 +1,28 @@
 import { useState } from 'react';
 import MenuList from './MenuList';
+import { useMutation } from '@apollo/client';
 import Createform from 'components/shared/Forms/Createform';
 import Deleteform from 'components/shared/Forms/Deleteform';
 import { validateForm } from '../../shared/utils';
-import fetcher from 'shared/fetcher';
+import { GET_USER_MENU } from './getUserMenu';
+import { CHANGE_ORDER_MUTATION } from './changeOrderCategory';
+import { DELETE_CATEGORY } from './deleteCategory';
+import { ADD_ITEM_MUTATION } from './addItem';
+import { EDIT_CATEGORY } from './editCategory';
 import { useStateValue } from '../../State/StateProvider';
 import Dialog from 'components/shared/Dialog';
 import CancelAcceptButtons from 'components/shared/Dialog/CancelAcceptButtons';
 import ItemCrudForm from '../Item/ItemCrudForm';
-import { deleteCategory, updateCategory, sortCategory } from './Category';
+
 const initialCategoryFields = [{ label: 'Nombre', value: 'name', error: null }];
 export default function MenuCRUD({
-    categories,
+    user,
     editable = true,
     availability = false,
-    handleAvailableChange,
-
-    mutate
+    handleAvailableChange
 }) {
-    const [{ itemFormFields, item, token, restaurant }, dispatch] = useStateValue();
+    const { categories, email } = user;
+    const [{ itemFormFields, item }, dispatch] = useStateValue();
 
     const [open, setOpen] = useState(false);
     const [categoryFields, setCategoryformfields] = useState(initialCategoryFields);
@@ -26,6 +30,79 @@ export default function MenuCRUD({
     const [categoryId, setCategoryid] = useState({});
 
     const [crud, setCrud] = useState('');
+
+    const [changeCategoryOrder] = useMutation(CHANGE_ORDER_MUTATION, {
+        update(cache, { data: { changeCategoryOrder } }) {
+            let newOrderCategories = {
+                ...user,
+                categories: changeCategoryOrder.categories
+            };
+            cache.writeQuery({
+                query: GET_USER_MENU,
+                variables: {
+                    email
+                },
+                data: { user: newOrderCategories }
+            });
+        }
+    });
+    const [deleteCategory] = useMutation(DELETE_CATEGORY, {
+        update(cache, { data: { deleteCategory } }) {
+            let remainingCategories = {
+                ...user,
+                categories: categories.filter(
+                    (category) => category._id !== deleteCategory.category._id
+                )
+            };
+            cache.writeQuery({
+                query: GET_USER_MENU,
+                variables: {
+                    email
+                },
+                data: { user: remainingCategories }
+            });
+        }
+    });
+    const [addItem] = useMutation(ADD_ITEM_MUTATION, {
+        update(cache, { data: { addItem } }) {
+            let newItem = addItem.item;
+            const categoryIndex = categories.findIndex(
+                (category) => category._id === newItem.category
+            );
+            let newMenu = {
+                ...user,
+                categories: [...categories[categoryIndex].items, newItem]
+            };
+            cache.writeQuery({
+                query: GET_USER_MENU,
+                variables: {
+                    email
+                },
+                data: { user: newMenu }
+            });
+        }
+    });
+    const [editCategory] = useMutation(EDIT_CATEGORY, {
+        update(cache, { data: { editCategory } }) {
+            let editedCategory = editCategory.category;
+            let newMenu = {
+                ...user,
+                categories: categories.map((cat) => {
+                    if (cat._id === categoryId) {
+                        return editedCategory;
+                    }
+                    return cat;
+                })
+            };
+            cache.writeQuery({
+                query: GET_USER_MENU,
+                variables: {
+                    email
+                },
+                data: { user: newMenu }
+            });
+        }
+    });
     const handleChange = (value) => (e) => {
         if (handleAvailableChange) {
             handleAvailableChange(e);
@@ -33,36 +110,19 @@ export default function MenuCRUD({
         setCategoryValues({ ...categoryValues, [value]: e.target.value });
     };
 
-    const addItemCallback = async () => {
+    const addItemCallback = () => {
         if (validateForm(itemFormFields, item, setItemFieldsError)) {
-            let categoriesArray = [];
-
-            categoriesArray.push(categoryId);
-
-            let newItem = {
-                categories: [categoryId],
-                restaurant: restaurant.id,
-                name: item.name,
-                description: item.description,
-                price: parseFloat(item.price),
-                not_available_at: []
-            };
-
-            const response = await fetcher('menu/items/', 'POST', token, newItem);
-
-            if (item.file && !response.error) {
-                newItem.image = item.file;
-                await fetcher(
-                    `menu/items/${response.id}/`,
-                    'PATCH',
-                    token,
-                    { image: item.file },
-                    true
-                );
-            }
-
-            mutate();
-
+            addItem({
+                variables: {
+                    owner: email,
+                    category: categoryId,
+                    name: item.name,
+                    description: item.description,
+                    price: parseFloat(item.price),
+                    image: item.file,
+                    options: item.options
+                }
+            });
             dispatch({
                 type: 'CLEAR_ITEM'
             });
@@ -71,18 +131,24 @@ export default function MenuCRUD({
     };
     const editCategoryCallback = () => {
         if (validateForm(categoryFields, categoryValues, setCategoryformfields)) {
-            updateCategory({ categoryId, name: categoryValues.name }, categories, token, mutate);
+            editCategory({
+                variables: {
+                    _id: categoryId,
+                    name: categoryValues.name
+                }
+            });
             setCategoryValues({});
 
             setOpen(false);
         }
     };
     const deleteCategoryCallback = () => {
+        deleteCategory({
+            variables: {
+                _id: categoryId
+            }
+        });
         setOpen(false);
-        deleteCategory(categoryId, categories, token, mutate);
-    };
-    const handleCategoryOrderCallback = (id, move) => {
-        sortCategory(id, move, categories, token, mutate);
     };
     const handleOpenCategoryCrud = (id, crud, name) => {
         setOpen(true);
@@ -93,6 +159,14 @@ export default function MenuCRUD({
         }
     };
 
+    const handleOrder = (categoryId, newPosition) => {
+        changeCategoryOrder({
+            variables: {
+                _id: categoryId,
+                position: newPosition
+            }
+        });
+    };
     const handleClose = () => {
         setOpen(false);
         setCrud('');
@@ -108,19 +182,18 @@ export default function MenuCRUD({
         });
     };
     return (
-        <>
-            {categories.map((category, i) => (
+        <div>
+            {categories?.map((category, i) => (
                 <MenuList
                     editable={editable}
                     category={category}
-                    handleOrder={handleCategoryOrderCallback}
+                    handleOrder={handleOrder}
                     key={i}
                     position={i}
                     lastCase={i == categories.length - 1}
                     handleOpenCrud={handleOpenCategoryCrud}
                     availability={availability}
                     handleAvailableChange={handleAvailableChange}
-                    mutate={mutate}
                 />
             ))}
             <Dialog
@@ -157,6 +230,6 @@ export default function MenuCRUD({
                     <ItemCrudForm />
                 )}
             </Dialog>
-        </>
+        </div>
     );
 }

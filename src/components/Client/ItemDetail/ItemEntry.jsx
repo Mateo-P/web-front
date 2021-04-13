@@ -18,9 +18,7 @@ export default function ItemEntry({
             <ListItemText
                 primaryTypographyProps={{ variant: 'subtitle1' }}
                 primary={entry.name}
-                secondary={
-                    entry.extra_cost != 0 ? formatCurrency(entry.extra_cost) + ' +' : 'Sin costos'
-                }
+                secondary={entry.price ? formatCurrency(entry.price) + ' +' : 'Sin costos'}
             />
             <ListItemSecondaryAction>
                 {!viewonly && (

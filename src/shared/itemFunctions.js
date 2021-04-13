@@ -6,8 +6,8 @@ export const getBasketTotal = (basket) =>
         let optionPricesTotal = 0;
 
         item.options.forEach((opt) => {
-            opt.choices.forEach((ent) => {
-                optionPricesTotal += ent.extra_cost;
+            opt.entries.forEach((ent) => {
+                optionPricesTotal += ent.price;
             });
         });
 

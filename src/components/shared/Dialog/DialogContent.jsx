@@ -4,7 +4,8 @@ import MuiDialogContent from '@material-ui/core/DialogContent';
 
 const StyledDialogContent = withStyles((theme) => ({
     root: {
-        padding: theme.spacing(2)
+        padding: theme.spacing(2),
+        minWidth: '70vw'
     }
 }))(MuiDialogContent);
 

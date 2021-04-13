@@ -21,8 +21,8 @@ export default function OrderRow({ order }) {
             table={
                 order.line ? order.clientName : order.table ? order.table.name : order.clientName
             }
-            name={order.product_name}
-            options={order.options ? order.options : []}
+            name={order.item.name}
+            options={order.item.options ? order.item.options : []}
             quantity={order.quantity}
             state={parseState(order.state)}
             time={moment(parseInt(order.createdTime)).locale('es').fromNow()}

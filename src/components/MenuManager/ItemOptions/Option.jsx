@@ -27,7 +27,7 @@ const initialOption = { name: '' };
 
 const editField = [{ label: 'Nombre...', value: 'name', error: null }];
 
-export default function Option({ name, min, max, choices }) {
+export default function Option({ name, min, max, entries }) {
     const classes = useStyles();
     const [edit, setEdit] = useState(false);
     const [openCreateEntry, setOpenCreateEntry] = useState(false);
@@ -46,7 +46,7 @@ export default function Option({ name, min, max, choices }) {
     };
 
     const handleEditOption = () => {
-        setFormValues({ name, choices, min, max });
+        setFormValues({ name, entries, min, max });
         setEdit(true);
     };
 
@@ -131,7 +131,7 @@ export default function Option({ name, min, max, choices }) {
                 />
             </div>
             <ItemEntry
-                choices={choices}
+                entries={entries}
                 openCreateEntry={openCreateEntry}
                 setOpenCreateEntry={setOpenCreateEntry}
                 optionName={name}

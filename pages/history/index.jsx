@@ -5,7 +5,7 @@ import RestaurantsUnavailable from '../../src/components/shared/RestaurantsUnava
 
 const HistoryPage = (props) => {
     return (
-        <Applayout {...props}>
+        <Applayout user={props.user}>
             <RestaurantsUnavailable>
                 <History user={props.user} />
             </RestaurantsUnavailable>

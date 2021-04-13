@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Item({
-    id,
+    _id,
     name,
     image,
     description,
@@ -108,7 +108,7 @@ export default function Item({
             </Card>
             {open && (
                 <ItemDetail
-                    item={{ id, name, description, image, price, options }}
+                    item={{ _id, name, description, image, price, options }}
                     open={open}
                     setOpen={setOpen}
                     viewonly={viewonly}

@@ -17,8 +17,8 @@ export default function Entry({ name, price }) {
     const [entry, setEntry] = useState({});
     const handleDeleteOption = () => {
         let filteredOptions = item.options.map((option) => {
-            let choices = option.choices.filter((entry) => entry.name !== name);
-            return { ...option, choices };
+            let entries = option.entries.filter((entry) => entry.name !== name);
+            return { ...option, entries };
         });
 
         dispatch({
@@ -34,14 +34,14 @@ export default function Entry({ name, price }) {
     const onEditEntry = () => {
         if (validateOptions(entry)) {
             let newOptions = item.options.map((option) => {
-                let newChoices = option.choices.map((tempEntry) => {
+                let newEntries = option.entries.map((tempEntry) => {
                     if (tempEntry.name === name) {
                         let { name, price } = entry;
                         return { __typename: 'Entrie', name, price };
                     }
                     return tempEntry;
                 });
-                return { ...option, choices: newChoices };
+                return { ...option, entries: newEntries };
             });
 
             dispatch({

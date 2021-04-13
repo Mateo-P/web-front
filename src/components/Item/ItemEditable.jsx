@@ -1,21 +1,143 @@
 import React, { useState, useEffect } from 'react';
 import ItemCrudForm from '../Item/ItemCrudForm';
+import { gql, useMutation } from '@apollo/client';
 import Item from './Item';
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Deleteform from 'components/shared/Forms/Deleteform';
 import { useStateValue } from '../../State/StateProvider';
+import { GET_USER_MENU } from '../MenuManager/getUserMenu';
 import Dialog from 'components/shared/Dialog';
 import CancelAcceptButtons from 'components/shared/Dialog/CancelAcceptButtons';
 import { validateForm } from '../../shared/utils';
-import useLogoUri from 'components/shared/useLogoUri';
-import { updateItem, deleteItem } from '../MenuManager/Item';
+
+const UPDATE_ITEM_MUTATION = gql`
+    mutation updateItemMutation(
+        $_id: ID!
+        $name: String
+        $description: String
+        $price: Float
+        $image: Upload
+        $options: [ItemOptionInput]
+    ) {
+        updateItem(
+            input: {
+                _id: $_id
+                name: $name
+                description: $description
+                price: $price
+                image: $image
+                options: $options
+            }
+        ) {
+            item {
+                _id
+                name
+                description
+                category
+                price
+                image {
+                    uri
+                    filename
+                }
+                options {
+                    name
+                    min
+                    max
+                    entries {
+                        name
+                        price
+                    }
+                }
+            }
+        }
+    }
+`;
+
+const DELETE_ITEM_MUTATION = gql`
+    mutation deletetemMutation($_id: ID!) {
+        deleteItem(input: { _id: $_id }) {
+            item {
+                _id
+            }
+        }
+    }
+`;
+
 export default function ItemEditable(props) {
-    const { id, image, available, availability, handleAvailableChange, not_available_at } = props;
+    const { _id, image, available, availability, handleAvailableChange } = props;
     const [formValues, setFormValues] = useState({});
     const [open, setOpen] = useState(false);
     const [edit, setEdit] = useState(true);
-    const [{ itemFormFields, item, token }, dispatch] = useStateValue();
+    const [{ user, itemFormFields, item }, dispatch] = useStateValue();
+
+    const [updateItem] = useMutation(UPDATE_ITEM_MUTATION, {
+        update: updatecacheItem,
+        onCompleted: () => {
+            if (item.file) {
+                window.location.reload();
+            }
+        }
+    });
+
+    const updatecacheItem = (cache, { data: { updateItem } }) => {
+        let email = user.email;
+        const userMenu = cache.readQuery({
+            query: GET_USER_MENU,
+            variables: { email }
+        });
+
+        let updatedItem = updateItem.item;
+
+        let newMenu = {
+            ...user,
+            categories: {
+                ...userMenu.user.categories.map((category) =>
+                    category.items.map((item) => {
+                        if (item._id === updatedItem._id) {
+                            return updatedItem;
+                        }
+                        return item;
+                    })
+                )
+            }
+        };
+
+        cache.writeQuery({
+            query: GET_USER_MENU,
+            variables: {
+                email
+            },
+            data: { user: newMenu }
+        });
+    };
+    const [deleteItem] = useMutation(DELETE_ITEM_MUTATION, {
+        update(cache, { data: { deleteItem } }) {
+            let email = user.email;
+            const userMenu = cache.readQuery({
+                query: GET_USER_MENU,
+                variables: {
+                    email
+                }
+            });
+            let deletedItem = deleteItem.item;
+            let newMenu = {
+                ...user,
+                categories: {
+                    ...userMenu.user.categories.map((category) =>
+                        category.items.map((item) => item._id !== deletedItem._id)
+                    )
+                }
+            };
+            cache.writeQuery({
+                query: GET_USER_MENU,
+                variables: {
+                    email
+                },
+                data: { user: newMenu }
+            });
+        }
+    });
 
     useEffect(() => {
         setFormValues({ ...formValues, available: available });
@@ -23,19 +145,39 @@ export default function ItemEditable(props) {
     const handleAvailability = (event) => {
         const newAvailableState = !formValues.available;
         if (handleAvailableChange) {
-            handleAvailableChange({ id, not_available_at }, newAvailableState);
+            handleAvailableChange(_id, newAvailableState);
         }
 
         setFormValues({ ...formValues, [event.target.name]: newAvailableState });
     };
 
-    const updateItemCallback = async () => {
+    const updateItemCallback = () => {
         if (validateForm(itemFormFields, item, setItemFieldsError)) {
-            setOpen(false);
-            updateItem(item, token);
+            let options = item.options?.map(({ name, min, max, entries }) => {
+                let newentries = entries.map((ent) => {
+                    return { name: ent.name, price: ent.price };
+                });
+                return {
+                    name,
+                    entries: newentries,
+                    min,
+                    max
+                };
+            });
+            updateItem({
+                variables: {
+                    _id: _id,
+                    name: item.name,
+                    description: item.description,
+                    price: parseFloat(item.price),
+                    image: item.file,
+                    options
+                }
+            });
             dispatch({
                 type: 'CLEAR_ITEM'
             });
+            setOpen(false);
         }
     };
     const setItemFieldsError = (updatedItemFields) => {
@@ -44,9 +186,13 @@ export default function ItemEditable(props) {
             itemFormFields: updatedItemFields
         });
     };
-    const deleteItemCallback = async () => {
+    const deleteItemCallback = () => {
+        deleteItem({
+            variables: {
+                _id
+            }
+        });
         setOpen(false);
-        deleteItem(id, token);
     };
 
     const handleOpenEdit = () => {
@@ -86,13 +232,11 @@ export default function ItemEditable(props) {
         });
     };
 
-    const { logoUri } = useLogoUri();
-
     return (
         <div>
             <Item
                 {...props}
-                image={image ? image : logoUri}
+                image={image ? image.uri : user.image}
                 availabilitySwitch={
                     availability ? availabilitySwitch(formValues.available) : undefined
                 }
@@ -112,9 +256,9 @@ export default function ItemEditable(props) {
                     />
                 }>
                 {edit ? (
-                    <ItemCrudForm edit />
+                    <ItemCrudForm />
                 ) : (
-                    <Deleteform message={`Se eliminará ${props.name} de tus items`} />
+                    <Deleteform message={`Se eliminará ${name} de tus items`} />
                 )}
             </Dialog>
         </div>

@@ -23,7 +23,7 @@ export default function useOwnerInfo(restaurantId) {
 
     useEffect(() => {
         if (!loading) {
-            dispatch({ type: 'SET_USER', user: data?.restaurant.owner });
+            dispatch({ type: 'SET_USER', user: data.restaurant.owner });
         }
     }, [loading]);
 

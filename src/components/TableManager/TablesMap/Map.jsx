@@ -3,14 +3,16 @@ import { useDrop } from 'react-dnd';
 import { ItemTypes } from './ItemTypes';
 import { Box } from './Box';
 import update from 'immutability-helper';
+import { useMutation } from '@apollo/client';
 import { makeStyles } from '@material-ui/core/styles';
 import MapActions from './MapActions';
 import Dialog from 'components/shared/Dialog';
 import Createform from 'components/shared/Forms/Createform';
 import Deleteform from 'components/shared/Forms/Deleteform';
 import { useSnackbar } from 'notistack';
-import fetcher from 'shared/fetcher';
-import useApi from 'hooks/useApi';
+import { GET_USER_RESTAURANTS } from '../../RestaurantsManager/getUserRestaurants';
+import { ADD_TABLE } from '../addTable';
+import { DELETE_TABLE } from '../deleteTable';
 import { useStateValue } from '../../../State/StateProvider';
 import CancelAcceptButtons from 'components/shared/Dialog/CancelAcceptButtons';
 
@@ -34,18 +36,62 @@ export default function Map({ tables, restaurantId }) {
     const [deleteTable, setDeleteTable] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
     const [openDialog, setOpenDialog] = useState(false);
-    const [{ token }] = useStateValue();
+    const [{ user }] = useStateValue();
+    const email = user.email;
     const [boxes, setBoxes] = useState(null);
     const [selectedTable, setSelectedtable] = useState(null);
-    const { revalidate } = useApi('GET', 'restaurants/');
-
-    //TO-DO fetch tables from specific endpoint instead of bringing all with the venue
-    //const { payload, isLoading, error } = useApi('GET', 'tables/?venue=${}');
-
     useLayoutEffect(() => {
         setBoxes(tables);
     }, [tables]);
 
+    const [deleteTableMutation] = useMutation(DELETE_TABLE, {
+        update(cache, { data: { deleteTable } }) {
+            const restaurants = cache.readQuery({
+                query: GET_USER_RESTAURANTS,
+                variables: { email }
+            });
+            let oldRestaurants = [...restaurants.restaurantsByOwner];
+
+            let { tables } = deleteTable;
+            let newRestaurants = oldRestaurants.map((restaurant) => {
+                if (restaurant._id === restaurantId) {
+                    return { ...restaurant, tables };
+                }
+                return restaurant;
+            });
+
+            cache.writeQuery({
+                query: GET_USER_RESTAURANTS,
+                variables: {
+                    email
+                },
+                data: { restaurantsByOwner: newRestaurants }
+            });
+        }
+    });
+    const [addTable] = useMutation(ADD_TABLE, {
+        update(cache, { data: { addTable } }) {
+            const restaurants = cache.readQuery({
+                query: GET_USER_RESTAURANTS,
+                variables: { email }
+            });
+            let oldRestaurants = [...restaurants.restaurantsByOwner];
+
+            let { table } = addTable;
+            let newRestaurants = oldRestaurants.map((restaurant) => {
+                let newTables = [...restaurant.tables, table];
+                return { ...restaurant, tables: newTables };
+            });
+
+            cache.writeQuery({
+                query: GET_USER_RESTAURANTS,
+                variables: {
+                    email
+                },
+                data: { restaurantsByOwner: newRestaurants }
+            });
+        }
+    });
     const [, drop] = useDrop({
         accept: ItemTypes.BOX,
         drop(item, monitor) {
@@ -89,20 +135,19 @@ export default function Map({ tables, restaurantId }) {
             setOpenDialog(true);
         }
     };
-    const deleteBox = async () => {
-        let tableId = selectedTable.id;
-
-        delete boxes[tableId];
-
+    const deleteBox = () => {
+        delete boxes[selectedTable.id];
+        deleteTableMutation({
+            variables: {
+                _id: selectedTable.id,
+                restaurant: restaurantId
+            }
+        });
         handleClose();
 
-        const { error } = await fetcher(`tables/${tableId}/`, 'DELETE', token);
-
-        if (!error) {
-            enqueueSnackbar('Mesa eliminada', {
-                variant: 'info'
-            });
-        }
+        enqueueSnackbar('Mesa eliminada', {
+            variant: 'error'
+        });
     };
     const moveBox = (id, left, top) => {
         setBoxes(
@@ -113,47 +158,30 @@ export default function Map({ tables, restaurantId }) {
             })
         );
     };
-    const editNameBox = async () => {
-        let tableId = selectedTable.id;
-
+    const editNameBox = () => {
         setBoxes(
             update(boxes, {
-                [tableId]: {
+                [selectedTable.id]: {
                     $merge: { name: formValues.name }
                 }
             })
         );
         handleClose();
         setEdit(false);
-
-        const { error } = await fetcher(`tables/${tableId}/`, 'PATCH', token, {
-            name: formValues.name
+        enqueueSnackbar('Mesa actualizada!', {
+            variant: 'success'
         });
-
-        if (!error) {
-            enqueueSnackbar('Mesa actualizada!', {
-                variant: 'success'
-            });
-        }
-
-        revalidate();
     };
-    const createBox = async () => {
-        let newTable = {
-            name: formValues.name,
-            top: 20,
-            left: 80,
-            venue: restaurantId
-        };
-
-        //mutate([{ ...restaurant, venues: [...venues, newVenue] }], false);
-
+    const createBox = () => {
+        addTable({
+            variables: {
+                name: formValues.name,
+                top: 20,
+                left: 80,
+                restaurant: restaurantId
+            }
+        });
         handleClose();
-
-        await fetcher('tables/', 'POST', token, newTable);
-
-        revalidate();
-
         enqueueSnackbar('Mesa creada!', {
             variant: 'success'
         });

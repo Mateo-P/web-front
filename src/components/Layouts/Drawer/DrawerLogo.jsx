@@ -16,7 +16,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function DrawerLogo() {
     const classes = useStyles();
-    const { logoUri } = useLogoUri();
+    const { loading, logoUri } = useLogoUri();
+
+    if (loading || !logoUri) {
+        return <div className={classes.loading}></div>;
+    }
 
     return (
         <div className={classes.imageContainer}>

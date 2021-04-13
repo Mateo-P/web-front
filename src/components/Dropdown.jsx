@@ -18,7 +18,6 @@ const useStyles = makeStyles((theme) => ({
 export default function Dropdown({ name, items, hook }) {
     const classes = useStyles();
     const [currentValue, setCurrentValue] = hook;
-
     const inputLabel = useRef(null);
     const [labelWidth, setLabelWidth] = useState(0);
     useEffect(() => {

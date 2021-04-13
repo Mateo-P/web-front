@@ -5,7 +5,7 @@ import RestaurantsUnavailable from '../../src/components/shared/RestaurantsUnava
 
 const menuManager = (props) => {
     return (
-        <Applayout {...props}>
+        <Applayout user={props.user}>
             <RestaurantsUnavailable>
                 <QRManager />
             </RestaurantsUnavailable>

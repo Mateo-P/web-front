@@ -1,30 +1,26 @@
 import { useState, useEffect } from 'react';
 import Dropdown from '../Dropdown';
-import useCurrentVenue from '../../hooks/useCurrentVenue';
+import useRestaurant from '../../hooks/useRestaurant';
 import RestaurantDropdown from '../shared/RestaurantDropdown';
 import PageHeader from '../shared/PageHeader';
 import BillList from './BillList';
 import FinishedOrders from './FinishedOrders';
 import Grid from '@material-ui/core/Grid';
 
-const allOptions = [
-    { name: 'Todos', _id: null },
-    { name: 'Fila', _id: 'line' },
-    { name: 'Domicilio', _id: 'delivery' }
-];
+const allTablesOption = { name: 'Todas las mesas', _id: null };
 const SortOptions = [
     { name: 'Tiempo      ⬇️', _id: 'timeDown' },
     { name: 'Tiempo      ⬆️', _id: 'timeUp' }
 ];
 
 export default function OrderManager() {
-    const { currentRestaurant } = useCurrentVenue();
+    const { currentRestaurant } = useRestaurant();
     const { tables } = currentRestaurant;
-    const [currentOption, setcurrentOption] = useState(allOptions[0]);
+    const [currentTable, setCurrentTable] = useState(allTablesOption);
     const [currentSort, setCurrentSort] = useState(SortOptions[1]);
 
     useEffect(() => {
-        setcurrentOption(allOptions[0]);
+        setCurrentTable(allTablesOption);
         setCurrentSort(SortOptions[1]);
     }, [currentRestaurant]);
 
@@ -38,9 +34,9 @@ export default function OrderManager() {
                         hook={[currentSort, setCurrentSort]}
                     />
                     <Dropdown
-                        name="Origen"
-                        items={[...allOptions, ...tables]}
-                        hook={[currentOption, setcurrentOption]}
+                        name="Mesa"
+                        items={[allTablesOption, ...tables]}
+                        hook={[currentTable, setCurrentTable]}
                     />
                     <RestaurantDropdown />
                 </div>
@@ -50,12 +46,12 @@ export default function OrderManager() {
                     <FinishedOrders
                         tables={tables}
                         currentSort={currentSort._id}
-                        currentOptionId={currentOption._id}
+                        currentTableId={currentTable._id}
                         restaurant={currentRestaurant._id}
                     />
                 </Grid>
                 <Grid item xs={12} sm={6} md={4}>
-                    <BillList restaurant={currentRestaurant.id} />
+                    <BillList restaurant={currentRestaurant._id} />
                 </Grid>
             </Grid>
         </div>

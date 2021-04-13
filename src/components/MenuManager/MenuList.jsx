@@ -48,11 +48,10 @@ export default function MenuList({
     handleOpenCrud,
     editable,
     availability,
-    handleAvailableChange,
-    mutate
+    handleAvailableChange
 }) {
     const classes = useStyles();
-    const { id, name, items } = category;
+    const { _id, name, items } = category;
     return (
         <>
             <Grid container spacing={3}>
@@ -67,7 +66,7 @@ export default function MenuList({
                                 <IconButton
                                     className={classes.buttonActions}
                                     color="secondary"
-                                    onClick={() => handleOrder(id, 'up')}>
+                                    onClick={() => handleOrder(_id, position - 1)}>
                                     <KeyboardArrowUpIcon fontSize="large" />
                                 </IconButton>
                             </Tooltip>
@@ -77,20 +76,20 @@ export default function MenuList({
                                 <IconButton
                                     className={classes.buttonActions}
                                     color="secondary"
-                                    onClick={() => handleOrder(id, 'down')}>
+                                    onClick={() => handleOrder(_id, position + 1)}>
                                     <KeyboardArrowDownIcon fontSize="large" />
                                 </IconButton>
                             </Tooltip>
                         )}
                         {editable && (
                             <EditAndDeleteMenu
-                                handleOpenDelete={() => handleOpenCrud(id, 'DELETE')}
-                                handleOpenEdit={() => handleOpenCrud(id, 'EDIT', name)}
+                                handleOpenDelete={() => handleOpenCrud(_id, 'DELETE')}
+                                handleOpenEdit={() => handleOpenCrud(_id, 'EDIT', name)}
                             />
                         )}
                     </div>
                     {editable && (
-                        <AddButton title="Agregar ítem" onClick={() => handleOpenCrud(id, '')} />
+                        <AddButton title="Agregar ítem" onClick={() => handleOpenCrud(_id, '')} />
                     )}
                 </Grid>
                 {items.map((item, i) => (
@@ -100,7 +99,6 @@ export default function MenuList({
                             {...item}
                             availability={availability}
                             editable={editable}
-                            mutate={mutate}
                         />
                     </Grid>
                 ))}

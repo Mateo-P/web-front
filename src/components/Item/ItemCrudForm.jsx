@@ -11,7 +11,7 @@ const useStyles = makeStyles({
     }
 });
 
-export default function ItemCrudForm({ edit }) {
+export default function ItemCrudForm() {
     const classes = useStyles();
     const [{ itemFormFields, item }, dispatch] = useStateValue();
 
@@ -33,7 +33,7 @@ export default function ItemCrudForm({ edit }) {
     };
     return (
         <Createform fields={itemFormFields} handleChange={handleChange} formValues={item}>
-            {edit && <ItemOptions itemId={item.id} />}
+            <ItemOptions />
             <div className={classes.Dropzone}>
                 <DropzoneArea
                     dropzoneText={'Arrastra una imagen aquí'}

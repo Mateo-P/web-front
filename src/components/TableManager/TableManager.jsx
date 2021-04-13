@@ -4,13 +4,13 @@ import { DndProvider } from 'react-dnd';
 import { TouchBackend } from 'react-dnd-touch-backend';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import _ from 'lodash';
-import useCurrentVenue from '../../hooks/useCurrentVenue';
+import useRestaurant from '../../hooks/useRestaurant';
 import RestaurantDropdown from '../shared/RestaurantDropdown';
 import PageHeader from '../shared/PageHeader';
 
 function Table() {
-    const { currentRestaurant } = useCurrentVenue();
-    const tables = _.keyBy(currentRestaurant.tables, 'id');
+    const { currentRestaurant } = useRestaurant();
+    const tables = _.keyBy(currentRestaurant.tables, '_id');
 
     const mobileChecker = function () {
         let check = false;
@@ -34,7 +34,7 @@ function Table() {
                 <RestaurantDropdown />
             </PageHeader>
             <DndProvider backend={mobileChecker() ? TouchBackend : HTML5Backend}>
-                <Map tables={tables} restaurantId={currentRestaurant.id} />
+                <Map tables={tables} restaurantId={currentRestaurant._id} />
             </DndProvider>
         </div>
     );

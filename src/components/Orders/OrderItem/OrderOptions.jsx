@@ -4,7 +4,7 @@ import Chip from 'components/shared/Chip';
 export default function OrderOptions({ options = [] }) {
     const showEntries = () => {
         return options.map((option) =>
-            option.choices.map((entry, i) => {
+            option.entries.map((entry, i) => {
                 return (
                     <Grid key={`op${i}`} item>
                         <Chip

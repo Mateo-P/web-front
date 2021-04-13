@@ -12,7 +12,7 @@ const entryFields = [
 
 type Props = {
     optionName: string;
-    choices: Array<Entry>;
+    entries: Array<Entry>;
     openCreateEntry: boolean;
     setOpenCreateEntry: (openCreateEntry: boolean) => void;
 };
@@ -21,7 +21,7 @@ const initialValue = { name: '' };
 
 export default function ItemEntry({
     optionName,
-    choices,
+    entries,
     openCreateEntry,
     setOpenCreateEntry
 }: Props) {
@@ -33,11 +33,11 @@ export default function ItemEntry({
             setOpenCreateEntry(false);
             let newOptions = item.options.map((option) => {
                 if (option.name === optionName) {
-                    if (!option.choices) {
-                        option.choices = [];
+                    if (!option.entries) {
+                        option.entries = [];
                     }
 
-                    return { ...option, choices: [...option.choices, formValues] };
+                    return { ...option, entries: [...option.entries, formValues] };
                 }
                 return option;
             });
@@ -71,7 +71,7 @@ export default function ItemEntry({
                     validation={validateEntry(formValues)}
                 />
             )}
-            <EntriesList choices={choices} />
+            <EntriesList entries={entries} />
         </>
     );
 }

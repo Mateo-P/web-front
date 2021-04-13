@@ -1,24 +1,45 @@
 import { useState, useEffect, useCallback } from 'react';
-import useApi from './useApi';
+import { GET_ORDERS_BY_RESTAURANTS } from '../components/Orders/getOrdersByRestaurant';
+import { useQuery } from '@apollo/client';
+import { NetworkStatus } from '@apollo/client';
+
 const Orders = ({ states, restaurant }) => {
-    console.log(restaurant);
     const [orders, setOrders] = useState([]);
 
-    const { payload, isLoading, error, mutate } = useApi('GET', 'orders/');
+    const queryObject = useQuery(GET_ORDERS_BY_RESTAURANTS, {
+        variables: { states, restaurant }
+    });
+
+    const { loading, error, data, refetch: _refetch, networkStatus } = queryObject;
+
+    const refetch = useCallback(() => {
+        setTimeout(() => {
+            if (queryObject && networkStatus !== NetworkStatus.refetch) {
+                try {
+                    _refetch();
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        }, 0);
+    }, [_refetch]);
 
     useEffect(() => {
         const interval = setInterval(() => {
-            mutate();
+            refetch();
         }, 2500);
         return () => clearInterval(interval);
     }, []);
 
     useEffect(() => {
-        if (payload) {
-            setOrders(payload);
+        if (data) {
+            const fetchedOrdersLength = data.ordersByRestaurant.length;
+            if (fetchedOrdersLength >= 0) {
+                setOrders(data.ordersByRestaurant);
+            }
         }
-    }, [payload]);
+    }, [data]);
 
-    return { isLoading, error, orders };
+    return { loading, error, orders };
 };
 export default Orders;

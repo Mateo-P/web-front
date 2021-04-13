@@ -9,16 +9,16 @@ import Chip from 'components/shared/Chip';
 export default function ItemOption({ option, viewonly }) {
     const isOptionMandatory = option.min >= 1;
     const isSingleSelection = option.max === 1;
-    const isMaxBelowTotalEntries = option.max < option.choices.length && !isSingleSelection;
+    const isMaxBelowTotalEntries = option.max < option.entries.length && !isSingleSelection;
 
     const [selectedEntries, setSelectedEntries] = useState([]);
     const dispatch = useStateValue()[1];
 
     const options = {
         name: option.name,
-        choices: selectedEntries.map((i) => {
-            let { name, extra_cost } = option.choices[i];
-            return { name, extra_cost };
+        entries: selectedEntries.map((i) => {
+            let { name, price } = option.entries[i];
+            return { name, price };
         })
     };
     useEffect(() => {
@@ -63,7 +63,7 @@ export default function ItemOption({ option, viewonly }) {
                 <Typography variant="h6">Seleccione hasta {option.max} opciones</Typography>
             )}
             <List dense>
-                {option.choices.map((entry, i) => (
+                {option.entries.map((entry, i) => (
                     <ItemEntry
                         key={`${option.name}${i}`}
                         entry={entry}

@@ -5,7 +5,7 @@ import RestaurantsUnavailable from '../../src/components/shared/RestaurantsUnava
 
 function BillingManagePage(props) {
     return (
-        <Applayout {...props}>
+        <Applayout user={props.user}>
             <RestaurantsUnavailable>
                 <BillManager />
             </RestaurantsUnavailable>

@@ -2,9 +2,14 @@ import { useStateValue } from 'State/StateProvider';
 import { COMPLEAT_LOGO_URI } from 'shared/constants';
 
 export default function useLogoUri() {
-    const [{ restaurant }] = useStateValue();
+    const [{ user }] = useStateValue();
+
+    if (!user || !user.image) {
+        return { loading: true, logoUri: null };
+    }
 
     return {
-        logoUri: restaurant.logo ? restaurant.logo : COMPLEAT_LOGO_URI
+        loading: false,
+        logoUri: user.image ? user.image : COMPLEAT_LOGO_URI
     };
 }

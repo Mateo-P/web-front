@@ -5,7 +5,7 @@ import WithApolloClient from '../WithApolloClient';
 import { makeStyles } from '@material-ui/core/styles';
 import RestaurantDropdown from '../shared/RestaurantDropdown';
 import HistoryList from './HistoryList';
-import useCurrentVenue from '../../hooks/useCurrentVenue';
+import useRestaurant from '../../hooks/useRestaurant';
 import PageHeader from '../shared/PageHeader';
 import { formatCurrency } from '../../shared/currencyFormat';
 
@@ -46,11 +46,11 @@ const useStyles = makeStyles({
 
 function History() {
     const classes = useStyles();
-    const { currentRestaurant } = useCurrentVenue();
+    const { currentRestaurant } = useRestaurant();
     const [lowdate, setLowdate] = useState(new Date('2020-01-02'));
     const [topdate, setTopdate] = useState(new Date(Date.now()));
     const { error, data } = useQuery(GET_HISTORY_BY_RESTAURANTS, {
-        variables: { date1: lowdate, date2: topdate, restaurant: currentRestaurant.id }
+        variables: { date1: lowdate, date2: topdate, restaurant: currentRestaurant._id }
     });
     function createData(_id, name, price, quantity, tableName, tiempoentrega) {
         return [_id, name, price, quantity, tableName, tiempoentrega];
@@ -71,7 +71,7 @@ function History() {
                     );
                     let totalItemPrice = item.price;
                     item.options?.forEach((option) =>
-                        option.choices.forEach(({ extra_price }) => (totalItemPrice += extra_price))
+                        option.entries.forEach(({ price }) => (totalItemPrice += price))
                     );
                     rows.push(
                         createData(

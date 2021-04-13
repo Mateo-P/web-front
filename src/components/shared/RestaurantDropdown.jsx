@@ -1,8 +1,8 @@
 import Dropdown from '../Dropdown';
-import useCurrentVenue from '../../hooks/useCurrentVenue';
+import useRestaurant from '../../hooks/useRestaurant';
 
 export default function RestaurantDropdown() {
-    const { currentRestaurant, setCurrentRestaurant, restaurants } = useCurrentVenue();
+    const { currentRestaurant, setCurrentRestaurant, restaurants } = useRestaurant();
 
     return (
         <>

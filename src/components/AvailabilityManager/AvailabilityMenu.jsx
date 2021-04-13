@@ -1,18 +1,41 @@
 import React from 'react';
+import { gql, useMutation } from '@apollo/client';
 import MenuCRUD from '../MenuManager/MenuCRUD';
-import { useStateValue } from 'State/StateProvider';
-import fetcher from 'shared/fetcher';
 
-const manageItemAvailability = (categories, restaurantId) => {
-    const newCategories = categories;
-    const result = newCategories?.map((cat) => {
+const ADD_RESTAURANT_TO_ITEM_MUTATION = gql`
+    mutation addRestaurantAvailabityToItemMutation($_id: ID!, $restaurantId: ID!) {
+        addRestaurantAvailabityToItem(input: { _id: $_id, restaurantId: $restaurantId }) {
+            item {
+                _id
+                name
+                availableAt
+            }
+        }
+    }
+`;
+
+const REMOVE_RESTAURANT_TO_ITEM_MUTATION = gql`
+    mutation removeRestaurantAvailabityToItemMutation($_id: ID!, $restaurantId: ID!) {
+        removeRestaurantAvailabityToItem(input: { _id: $_id, restaurantId: $restaurantId }) {
+            item {
+                _id
+                name
+                availableAt
+            }
+        }
+    }
+`;
+
+const manageItemAvailability = (menu, restaurantId) => {
+    const newMenu = { ...menu };
+    const result = newMenu.categories?.map((cat) => {
         let newCategory = { ...cat };
         let newItems = newCategory.items.map((item) => {
             let available;
-            if (item.not_available_at && item.not_available_at.includes(restaurantId)) {
-                available = false;
-            } else {
+            if (item.availableAt && item.availableAt.includes(restaurantId)) {
                 available = true;
+            } else {
+                available = false;
             }
             return { ...item, available };
         });
@@ -20,27 +43,34 @@ const manageItemAvailability = (categories, restaurantId) => {
         return { ...cat, items: newItems };
     });
 
-    return result;
+    return { ...menu, categories: result };
 };
 
-function AvailabilityManager({ categories, restaurant }) {
-    const itemsWithAvailability = manageItemAvailability(categories, restaurant.id);
-    const [{ token }] = useStateValue();
+function AvailabilityManager({ user, restaurant }) {
+    //const { categories } = user;
 
-    const handleAvailableChange = async ({ id }, newAvailableState) => {
-        let operation = '';
+    const [addRestaurantAvailabityToItemMutation] = useMutation(ADD_RESTAURANT_TO_ITEM_MUTATION);
+    const [removeRestaurantAvailabityToItemMutation] = useMutation(
+        REMOVE_RESTAURANT_TO_ITEM_MUTATION
+    );
 
+    const itemsWithAvailability = manageItemAvailability(user, restaurant._id);
+    const handleAvailableChange = (_id, newAvailableState) => {
         if (newAvailableState === true) {
-            operation = 'remove';
+            addRestaurantAvailabityToItemMutation({
+                variables: {
+                    _id: _id,
+                    restaurantId: restaurant._id
+                }
+            });
         } else if (newAvailableState === false) {
-            operation = 'add';
+            removeRestaurantAvailabityToItemMutation({
+                variables: {
+                    _id: _id,
+                    restaurantId: restaurant._id
+                }
+            });
         }
-
-        await fetcher(`menu/not_available_venue`, 'POST', token, {
-            item_id: id,
-            venue_id: restaurant.id,
-            operation
-        });
     };
 
     return (
@@ -48,7 +78,7 @@ function AvailabilityManager({ categories, restaurant }) {
             handleAvailableChange={handleAvailableChange}
             availability={true}
             editable={false}
-            categories={itemsWithAvailability}
+            user={itemsWithAvailability}
         />
     );
 }

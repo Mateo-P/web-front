@@ -1,33 +1,17 @@
 import React from 'react';
-import { useEffect } from 'react';
+
 import auth0 from '../lib/auth0';
 import { fetchUser } from '../lib/user';
 import createLoginUrl from '../lib/url-helper';
 import RedirectToLogin from './login-redirect';
-import { useStateValue } from 'State/StateProvider';
 
 export default function withAuth(InnerComponent) {
     function Authenticated(props) {
-        const [{ token }, dispatch] = useStateValue();
-
         if (!props.user) {
             return <RedirectToLogin />;
         }
 
-        useEffect(() => {
-            if (props.idToken) {
-                dispatch({
-                    type: 'SET_TOKEN',
-                    token: props.idToken
-                });
-            }
-        }, [props.idToken]);
-
-        if (!token) {
-            return <div>Cargando...</div>;
-        }
-
-        return <div>{<InnerComponent {...props} />}</div>;
+        return <div>{<InnerComponent {...props} user={props.user} />}</div>;
     }
 
     Authenticated.getInitialProps = async (ctx) => {
@@ -53,9 +37,7 @@ export default function withAuth(InnerComponent) {
 
         user = session.user;
 
-        const { idToken } = session;
-        console.log(idToken);
-        return { user, idToken };
+        return { user };
     };
 
     return Authenticated;
