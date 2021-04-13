@@ -17,11 +17,6 @@ module.exports = {
         storageDir: 'tmp'
     },
     images: {
-        domains: [
-            'img.icons8.com',
-            'mi-menu.s3.us-east-2.amazonaws.com',
-            'compleat-dev.s3.amazonaws.com',
-            'localhost'
-        ]
+        domains: ['img.icons8.com', 'mi-menu.s3.us-east-2.amazonaws.com']
     }
 };

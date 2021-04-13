@@ -12,7 +12,7 @@ export default initAuth0({
         cookieSecret: config.SESSION_COOKIE_SECRET,
         cookieLifetime: config.SESSION_COOKIE_LIFETIME,
         storeIdToken: true,
-        storeRefreshToken: true,
+        storeRefreshToken: false,
         storeAccessToken: true
     }
 });

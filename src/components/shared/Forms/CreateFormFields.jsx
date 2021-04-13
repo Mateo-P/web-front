@@ -2,13 +2,11 @@ import React from 'react';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
-
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     field: {
         width: '100%'
     }
-});
-
+}));
 function CreateFormFields({ field, formValues, handleChange }) {
     const classes = useStyles();
     return (

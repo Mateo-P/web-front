@@ -8,10 +8,10 @@ function reducer(state, action) {
                 ...state,
                 GrandParentCallback: action.GrandParentCallback
             };
-        case 'SET_RESTAURANT_INFO':
+        case 'SET_RESTAURANTS':
             return {
                 ...state,
-                restaurant: action.restaurant
+                restaurants: action.restaurants
             };
 
         case 'SET_CURRENT_RESTAURANT':
@@ -25,13 +25,6 @@ function reducer(state, action) {
                 ...state,
                 user: action.user
             };
-
-        case 'SET_TOKEN':
-            return {
-                ...state,
-                token: action.token
-            };
-
         case 'SET_ATRIBUTE_TO_ITEM':
             // eslint-disable-next-line no-case-declarations
             let value = action.value;

@@ -1,52 +1,75 @@
 import { useEffect } from 'react';
 import { scrollSpy } from 'react-scroll';
-import { useRouter } from 'next/router';
-import MenuNav from '../../../../src/components/Client/MenuNav';
-import Menu from '../../../../src/components/Client/Menu';
-import { useStateValue } from 'State/StateProvider';
-import useApi from '../../../../src/hooks/useApi';
-function Order() {
-    const router = useRouter();
-    const restaurantId = router.query.restaurant;
-    const { payload: restaurantMenu, isLoading } = useApi(
-        'GET',
-        `menu/diner?venue=${restaurantId}`
-    );
+import { gql } from '@apollo/client';
+import { createApolloClientSSR } from '../../../apollo/client';
+import MenuNav from '../../../src/components/Client/MenuNav';
+import Menu from '../../../src/components/Client/Menu';
 
-    const dispatch = useStateValue()[1];
+const GET_RESTAURANT_INFO_QUERY = gql`
+    query GET_RESTAURANT_INFO_QUERY($restaurantId: ID!) {
+        restaurant(id: $restaurantId) {
+            name
+            phone
+            categories {
+                name
+                items {
+                    _id
+                    name
+                    description
+                    price
+                    image {
+                        uri
+                    }
+                    options {
+                        name
+                        min
+                        max
+                        entries {
+                            name
+                            price
+                        }
+                    }
+                }
+            }
+        }
+    }
+`;
+function index(props) {
+    const { data, restaurantId } = props;
+    const categories = data.restaurant.categories;
+    const filteredCategories = categories.filter((category) => category.items.length > 0);
+
     useEffect(() => {
         scrollSpy.update();
-    }, []);
-    useEffect(() => {
-        if (restaurantMenu) {
-            dispatch({
-                type: 'SET_RESTAURANT_INFO',
-                restaurant: restaurantMenu[0].venue
-            });
-        }
-    }, [restaurantMenu]);
+    });
 
-    if (isLoading) {
-        return <div>Cargando...</div>;
-    }
-    if (restaurantMenu) {
-        console.log([restaurantMenu]);
-        const categories = restaurantMenu[0].menu;
-        const filteredCategories = categories.filter((category) => category.items.length > 0);
-        let restaurantName = restaurantMenu[0].venue.name;
-        return (
-            <>
-                <MenuNav
-                    restaurantId={restaurantId}
-                    viewonly
-                    restaurantName={restaurantName}
-                    restaurantPhone={'3144183191'}
-                    categories={filteredCategories}
-                />
-                <Menu restaurantId={restaurantId} categories={filteredCategories} />
-            </>
-        );
-    }
+    return (
+        <>
+            <MenuNav
+                restaurantName={data.restaurant.name}
+                restaurantId={restaurantId}
+                categories={filteredCategories}
+                viewonly
+            />
+            <Menu restaurantId={restaurantId} categories={filteredCategories} viewonly />
+        </>
+    );
 }
+export const getServerSideProps = async ({ query }) => {
+    const apolloClient = createApolloClientSSR();
+    const restaurantId = query.restaurant;
+    const { data } = await apolloClient.query({
+        query: GET_RESTAURANT_INFO_QUERY,
+        variables: {
+            restaurantId
+        }
+    });
 
-export default Order;
+    return {
+        props: {
+            data,
+            restaurantId
+        }
+    };
+};
+export default index;

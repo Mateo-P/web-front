@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useDrag } from 'react-dnd';
 import { ItemTypes } from './ItemTypes';
-import { useStateValue } from '../../../State/StateProvider';
-import fetcher from 'shared/fetcher';
+import { UPDATE_TABLES } from '../updateTable';
+import { useMutation } from '@apollo/client';
 
 const style = {
     display: 'flex',
@@ -19,21 +19,24 @@ const style = {
 };
 
 export const Box = ({ id, name, left, top, hideSourceOnDrag, onSelect }) => {
-    const [{ token }] = useStateValue();
-
     const [{ isDragging }, drag] = useDrag({
         item: { id, left, top, type: ItemTypes.BOX },
         collect: (monitor) => ({
             isDragging: monitor.isDragging()
         })
     });
+    const [updateTable] = useMutation(UPDATE_TABLES);
 
-    useEffect(async () => {
-        fetcher(`tables/${id}/`, 'PATCH', token, {
-            top,
-            left
+    useEffect(() => {
+        updateTable({
+            variables: {
+                _id: id,
+                name,
+                top,
+                left
+            }
         });
-    }, [left, top]);
+    }, [name, left, top]);
 
     if (isDragging && hideSourceOnDrag) {
         return <div ref={drag} />;

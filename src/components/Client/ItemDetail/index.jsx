@@ -25,7 +25,7 @@ const areRequiredOptionsSelected = (selectedOptions, filteredOptions) => {
     filteredOptions.forEach((fo) => {
         const optionToCompare = selectedOptions.find((so) => so.name === fo.name);
 
-        if (optionToCompare && optionToCompare.choices < fo.min) {
+        if (optionToCompare && optionToCompare.entries < fo.min) {
             areSelected = false;
         }
     });
@@ -35,7 +35,7 @@ const areRequiredOptionsSelected = (selectedOptions, filteredOptions) => {
 
 const filterOptions = (item) => {
     if (item.options) {
-        return item.options.filter((opt) => opt.choices && opt.choices.length >= 1);
+        return item.options.filter((opt) => opt.entries && opt.entries.length >= 1);
     } else return [];
 };
 
@@ -60,7 +60,7 @@ export default function ItemDetail({ item, open, setOpen, viewonly }) {
     const shouldButtonDisable = !areRequiredOptionsSelected(selectedOptions, filteredOptions);
 
     return (
-        <Drawer transitionDuration={{ enter: 400, exit: 400 }} open={open} setOpen={setOpen}>
+        <Drawer open={open} setOpen={setOpen}>
             <ItemDetailImage src={item.image} onClick={() => setOpen(false)} />
             <Box p={2}>
                 <Typography variant="h4" gutterBottom>

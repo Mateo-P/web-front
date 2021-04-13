@@ -5,6 +5,11 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Createform from 'components/shared/Forms/Createform';
 import Deleteform from 'components/shared/Forms/Deleteform';
+import { DELETE_RESTAURANT_MUTATION } from './deleteRestaurant';
+import { UPDATE_RESTAURANT_MUTATION } from './updateRestaurant';
+import { GET_USER_RESTAURANTS } from './getUserRestaurants';
+import { useMutation } from '@apollo/client';
+import { useStateValue } from '../../State/StateProvider';
 import EditAndDeleteMenu from '../shared/EditAndDeleteMenu';
 import Dialog from 'components/shared/Dialog';
 import CancelAcceptButtons from 'components/shared/Dialog/CancelAcceptButtons';
@@ -27,31 +32,56 @@ export default function SimpleCard(props) {
     const classes = useStyles();
     const formFields = [
         { label: 'Nombre', value: 'name' },
-        { label: 'Dirección', value: 'address' },
-        { label: 'teléfono', value: 'phone' }
+        { label: 'Dirección', value: 'address' }
     ];
     const [formValues, setFormValues] = useState({});
+    const [{ user }] = useStateValue();
     const [open, setopen] = useState(false);
     const [edit, setEdit] = useState(true);
+    const [updateRestaurant] = useMutation(UPDATE_RESTAURANT_MUTATION);
 
+    const [deleteRestaurant] = useMutation(DELETE_RESTAURANT_MUTATION, {
+        update(cache, { data: { deleteRestaurant } }) {
+            let email = user.email;
+            const existingRestaurants = cache.readQuery({
+                query: GET_USER_RESTAURANTS,
+                variables: {
+                    email
+                }
+            });
+
+            let oldRestaurants = existingRestaurants.restaurantsByOwner;
+            let deletedRestaurant = deleteRestaurant.restaurant;
+            cache.writeQuery({
+                query: GET_USER_RESTAURANTS,
+                variables: {
+                    email
+                },
+                data: {
+                    restaurantsByOwner: oldRestaurants.filter(
+                        (rest) => rest._id !== deletedRestaurant._id
+                    )
+                }
+            });
+        }
+    });
     const updateRestaurantCallback = () => {
-        // updateRestaurant({
-        //     variables: {
-        //         _id: props._id,
-        //         name: formValues.name,
-        //         address: formValues.address,
-        //         phone: formValues.phone
-        //     }
-        // });
-        setopen(false);
-        props.editVenue({
-            name: formValues.name,
-            address: formValues.address
+        updateRestaurant({
+            variables: {
+                _id: props._id,
+                name: formValues.name,
+                address: formValues.address
+            }
         });
+        setopen(false);
     };
     const deleteRestaurantCallback = () => {
+        deleteRestaurant({
+            variables: {
+                _id: props._id
+            }
+        });
         setopen(false);
-        props.deleteVenue();
     };
 
     const handleChange = (value) => (e) => {
@@ -62,8 +92,7 @@ export default function SimpleCard(props) {
         setopen(true);
         setFormValues({
             name: props.name,
-            address: props.address,
-            phone: props.phone
+            address: props.address
         });
     };
     const handleopenDelete = () => {
@@ -76,8 +105,7 @@ export default function SimpleCard(props) {
         setEdit(true);
         setFormValues({
             name: props.name,
-            address: props.address,
-            phone: props.phone
+            address: props.address
         });
     };
     return (
@@ -101,14 +129,6 @@ export default function SimpleCard(props) {
                 <div className={classes.header}>
                     <Typography variant="h5" component="h2">
                         {props.address}
-                    </Typography>
-                </div>
-                <Typography className={classes.title} color="textSecondary" gutterBottom>
-                    Teléfono:
-                </Typography>
-                <div className={classes.header}>
-                    <Typography variant="h5" component="h2">
-                        {props.phone}
                     </Typography>
                 </div>
             </CardContent>

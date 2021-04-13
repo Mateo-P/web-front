@@ -4,12 +4,11 @@ import { DropzoneArea } from 'material-ui-dropzone';
 import { Grid, TextField } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import fetcher from 'shared/fetcher';
+import { ADD_IMAGE_USER } from './addImageUser';
+import { useMutation } from '@apollo/client';
 import ProfileImage from './ProfileImage';
 import Dialog from 'components/shared/Dialog';
 import CancelAcceptButtons from 'components/shared/Dialog/CancelAcceptButtons';
-import { useStateValue } from 'State/StateProvider';
-import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles({
     root: {
@@ -23,33 +22,36 @@ const useStyles = makeStyles({
         marginTop: '15px'
     }
 });
-export default function Profile({ user }) {
+export default function Profile(props) {
     const classes = useStyles();
-    const { email } = user;
     const [file, setFile] = useState(null);
     const [open, setOpen] = useState(false);
-    const [{ restaurant, token }] = useStateValue();
+    const [addUserImage] = useMutation(ADD_IMAGE_USER, {
+        onCompleted: () => {
+            window.location.reload();
+        }
+    });
+
+    const { email, image } = props;
 
     const handleFileUpload = async (file) => {
         setFile(file[0]);
     };
     const handleClose = () => {
         setOpen(false);
-    };
-
-    const addCallback = async () => {
-        handleClose();
-
-        await fetcher(`restaurants/${restaurant.id}/`, 'PATCH', token, {
-            logo: file
-        });
         setFile(null);
-        location.reload();
     };
-    console.log(file);
-
-    const { name, logo, plan_display } = restaurant;
-
+    const handleOpen = () => {
+        setOpen(true);
+    };
+    const addCallback = () => {
+        addUserImage({
+            variables: {
+                email,
+                image: file
+            }
+        });
+    };
     return (
         <>
             <Card className={classes.root}>
@@ -59,31 +61,7 @@ export default function Profile({ user }) {
                             <TextField
                                 className={classes.label}
                                 id="outlined-read-only-input"
-                                label="Nombre del restaurante"
-                                defaultValue={name}
-                                InputProps={{
-                                    readOnly: true
-                                }}
-                                variant="outlined"
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <TextField
-                                className={classes.label}
-                                id="outlined-read-only-input"
-                                label="Mi Plan"
-                                defaultValue={plan_display}
-                                InputProps={{
-                                    readOnly: true
-                                }}
-                                variant="outlined"
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <TextField
-                                className={classes.label}
-                                id="outlined-read-only-input"
-                                label="Correo"
+                                label="Email"
                                 defaultValue={email}
                                 InputProps={{
                                     readOnly: true
@@ -92,14 +70,14 @@ export default function Profile({ user }) {
                             />
                         </Grid>
                         <Grid item xs={12} sm={4}>
-                            <Typography variant="subtitle1">Logo:</Typography>
                             <ProfileImage
-                                src={logo}
+                                src={image}
                                 width={100}
                                 height={100}
-                                callback={() => setOpen(true)}
+                                callback={handleOpen}
                             />
                         </Grid>
+                        <Grid item xs={12} sm={4}></Grid>
                     </Grid>
                 </CardContent>
             </Card>
@@ -107,13 +85,7 @@ export default function Profile({ user }) {
                 title={'Agregar Logo'}
                 open={open}
                 onClose={handleClose}
-                action={
-                    <CancelAcceptButtons
-                        onCancel={handleClose}
-                        onAccept={addCallback}
-                        disableAccept={!file}
-                    />
-                }>
+                action={<CancelAcceptButtons onCancel={handleClose} onAccept={addCallback} />}>
                 <div className={classes.dropzone}>
                     <DropzoneArea
                         dropzoneText={<>&nbsp;Arrastra una imagen aquí&nbsp;</>}

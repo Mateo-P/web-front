@@ -6,7 +6,6 @@ export const GET_USER_RESTAURANTS = gql`
             _id
             name
             address
-            phone
             tables {
                 _id
                 name

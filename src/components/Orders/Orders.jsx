@@ -5,7 +5,7 @@ import EmptyItemsMessage from 'components/shared/EmptyItemsMessage';
 const Orders = ({ currentStateId, restaurant, currentTableId }) => {
     const params = { states: ['CREATED', 'PROGRESS'], restaurant };
     const { loading, error, orders } = useOrders(params);
-    console.log(orders);
+
     if (loading) return <div>Cargando...</div>;
 
     if (error) return `Error! ${error.message}`;

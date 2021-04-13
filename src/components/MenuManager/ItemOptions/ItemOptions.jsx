@@ -4,33 +4,26 @@ import ItemOptionsList from './ItemOptionsList';
 import CreateEditField from 'components/shared/Forms/CreateEditField';
 import { useStateValue } from 'State/StateProvider';
 import validateOptions from './validateOptions';
-import fetcher from 'shared/fetcher';
 
 const CreateFields = [{ label: 'Nombre', value: 'name', error: null }];
-const initialOption = { name: '', choices: [], min: 0, max: 1, not_available_at: [] };
+const initialOption = { name: '', entries: [], min: 0, max: 1 };
 
 export default function ItemOptions() {
     const [openCreateOption, setOpenCreateOption] = useState(false);
 
     const [option, setOption] = useState(initialOption);
-    const [{ item, token }, dispatch] = useStateValue();
+    const [{ item }, dispatch] = useStateValue();
     const handleCreateOption = () => {
         setOpenCreateOption(true);
     };
 
-    const onCreateOption = async () => {
+    const onCreateOption = () => {
         if (validateOptions(option)) {
             if (item.options === null) {
                 item.options = [];
             }
 
-            option.item = item.id;
-
             let newOptions = [...item.options, option];
-
-            //create option
-
-            await fetcher('menu/options/', 'POST', token, option);
 
             dispatch({
                 type: 'SET_ATRIBUTE_TO_ITEM',

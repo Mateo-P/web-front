@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useStateValue } from '../../../State/StateProvider';
-import fetcher from '../../../shared/fetcher';
+import CheckoutContent from './CheckoutContent';
+import { gql, useMutation } from '@apollo/client';
 import Dialog from 'components/shared/Dialog';
 import CheckoutButton from 'components/Client/Checkout/CheckoutButton';
 import { useSnackbar } from 'notistack';
@@ -9,8 +10,16 @@ import BasketButton from 'components/Client/Checkout/BasketButton';
 import { getBasketTotal, areItemsEqual } from 'shared/itemFunctions';
 import useLocalStorage from '../../../hooks/useLocalStorage';
 import useOrderNotifications from './useOrderNotifications';
-import Checkout from './Checkout';
-import { validateForm } from '../../../shared/utils';
+
+const ADD_ORDERS = gql`
+    mutation AddOrders($input: [OrderInput]!) {
+        addOrders(input: $input) {
+            orders {
+                _id
+            }
+        }
+    }
+`;
 
 function countUnique(basket, item) {
     let count = 0;
@@ -38,82 +47,76 @@ const createItemsBasket = (basket) => {
     return items;
 };
 
-export default function index() {
+export default function Checkout() {
     const [{ basket }, dispatch] = useStateValue();
     const [disableButton, setDisableButton] = useState(false);
-    const [formFields, setFormfields] = useState([]);
-    const [resourcetype, setResourcetype] = useState('TableOrder');
-    const [formValues, setFormValues] = useState({});
+    const [clientName, setClientName] = useState('');
+    const [clientAddress, setClientAddress] = useState('');
+    const [clientPhone, setClientPhone] = useState('');
     const key = 'clientOrders';
     const [orders, setOrders] = useLocalStorage(key, []);
     const itemsBasket = createItemsBasket(basket);
     const [open, setOpen] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
     const router = useRouter();
-    const venue = router.query.restaurant;
-    const originId = router.query.origin;
-    const { sendOrderNotification } = useOrderNotifications(venue);
+    const restaurant = router.query.restaurant;
+    const tableId = router.query.table;
+    const { sendOrderNotification } = useOrderNotifications(restaurant);
 
     useEffect(() => {
-        if (originId === 'line') {
-            setDisableButton(false);
-            setResourcetype('LineOrder');
-            setFormfields([{ label: 'Nombre para recibir el pedido...', value: 'name' }]);
-        } else if (originId === 'delivery') {
-            setDisableButton(false);
-            setResourcetype('DeliveryOrder');
-            setFormfields([
-                { label: 'Nombre para recibir el pedido...', value: 'name' },
-                { label: 'Dirección', value: 'address' },
-                { label: 'Celular', value: 'phone' }
-            ]);
+        if (tableId === 'line') {
+            if (clientName) {
+                setDisableButton(false);
+            } else {
+                setDisableButton(true);
+            }
         }
-    }, []);
+    }, [clientName]);
 
-    const handleChange = (value) => (e) => {
-        setFormValues({ ...formValues, [value]: e.target.value });
+    const [addOrders] = useMutation(ADD_ORDERS, {
+        onCompleted({ addOrders }) {
+            onOrder(addOrders);
+        }
+    });
+
+    const handleOrder = () => {
+        setDisableButton(true);
+        const orderInput = [];
+
+        itemsBasket.forEach(({ _id, name, price, options, image, quantity }) => {
+            const itemVariables = {
+                restaurant,
+                tableId: tableId === 'line' ? null : tableId,
+                line: tableId === 'line',
+                quantity,
+                image,
+                clientName: clientName + ' (' + clientAddress + ') .',
+                clientPhone,
+                item: {
+                    _id,
+                    name,
+                    price,
+                    options
+                }
+            };
+
+            orderInput.push(itemVariables);
+        });
+
+        const variables = {
+            input: orderInput
+        };
+
+        addOrders({ variables });
     };
 
-    const handleOrder = async () => {
-        if (validateForm(formFields, formValues, setFormfields)) {
-            setDisableButton(true);
+    const onOrder = (addOrders) => {
+        let ids = addOrders.orders.map(({ _id }) => {
+            return { _id: _id };
+        });
+        setOrders([...orders, ...ids]);
+        dispatch({ type: 'EMPTY_BASKET' });
 
-            let items = itemsBasket.map(({ id, name, price, options, image, quantity }) => {
-                let orderChoices = [];
-                options.forEach(({ name, choices }) => {
-                    choices.forEach((choice) => {
-                        orderChoices.push({
-                            option_name: name,
-                            name: choice.name,
-                            extra_cost: choice.extra_cost
-                        });
-                    });
-                });
-                return {
-                    item_id: id,
-                    product_name: name,
-                    quantity,
-                    comments: 'sapo',
-                    choices: orderChoices,
-                    image_url: image,
-                    price
-                };
-            });
-            const body = { resourcetype, venue, items, table_id: originId };
-            console.log(body);
-            const order = await fetcher(`orders/`, 'POST', null, body);
-
-            onOrder(order);
-        }
-    };
-
-    const onOrder = (order) => {
-        console.log(order);
-        // let ids = order.items.map(({ id }) => {
-        //     return { id };
-        // });
-        // setOrders([...orders, ...ids]);
-        // dispatch({ type: 'EMPTY_BASKET' });
         setOpen(false);
         enqueueSnackbar('¡Pedido exitoso!', {
             variant: 'success',
@@ -122,7 +125,7 @@ export default function index() {
         });
         setDisableButton(false);
         sendOrderNotification();
-        // router.push('/ordersTracking');
+        router.push('/ordersTracking');
     };
 
     return (
@@ -139,12 +142,15 @@ export default function index() {
                         handleOrder={handleOrder}
                     />
                 }>
-                <Checkout
+                <CheckoutContent
+                    line={tableId === 'line'}
                     itemsBasket={itemsBasket}
                     total={getBasketTotal(basket)}
-                    formFields={formFields}
-                    formValues={formValues}
-                    handleChange={handleChange}
+                    clientName={clientName}
+                    setClientName={setClientName}
+                    clientAddress={clientAddress}
+                    setClientAddress={setClientAddress}
+                    clientPhoneHook={[clientPhone, setClientPhone]}
                 />
             </Dialog>
         </>

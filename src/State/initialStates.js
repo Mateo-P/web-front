@@ -10,7 +10,7 @@ export const initialStates = {
     user: null,
     restaurants: [],
     currentRestaurant: null,
-    token: null,
+
     //DinerSide
     basket: [],
     selectedOptions: []

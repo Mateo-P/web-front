@@ -18,7 +18,7 @@ export default function Createform({ fields, handleChange, formValues, children 
                     </Grid>
                 );
             })}
-            <Grid item xs={12}>
+            <Grid item xs={12} md={12}>
                 {children}
             </Grid>
         </Grid>

@@ -24,7 +24,7 @@ export default function LayoutContent({ user, children }) {
         <main className={classes.content}>
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
-                {user ? children : 'Cargando.........'}
+                {user ? children : 'Cargando...'}
                 <Box pt={4}>
                     <Copyright />
                 </Box>
