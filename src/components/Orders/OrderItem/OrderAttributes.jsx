@@ -16,7 +16,7 @@ export default function OrderAttributes({ table, time, state }) {
             <Chip fullWidth icon={'🕓'} label={time} /> */}
             <Typography variant="h6" gutterBottom>
                 <span role="img" aria-label="table-icon">
-                    {table.includes('(') ? '🏠' : '👥'}
+                    {/*table.includes('(') ? '🏠' : '👥'*/}
                 </span>{' '}
                 &nbsp;&nbsp;
                 {table}
