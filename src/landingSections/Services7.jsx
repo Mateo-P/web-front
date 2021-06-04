@@ -1,5 +1,6 @@
 import React from 'react';
 import { Grid, Button } from '@material-ui/core';
+import { FormattedMessage } from 'react-intl';
 
 const Service7 = () => {
     return (
@@ -8,14 +9,15 @@ const Service7 = () => {
                 <Grid container alignItems="center" spacing={5}>
                     <Grid item lg={6} md={6} sm={12} xs={12}>
                         <div className="max-w-372 text-left">
-                            <h2 className="mb-4">Crea un menú digital sencillo e intuitivo.</h2>
+                            <h2 className="mb-4">
+                                <FormattedMessage id="service7Msg" />
+                            </h2>
                             <p className="whitespace-pre-wrap">
-                                {`El menú de tu restaurante tendrá un aspecto familiar y sencillo para que tu clientela pueda navegar con facilidad a través de él.
-              \nSimplifica la operación de tu restaurante y facilita a tus clientes el proceso de pedido con la funcionalidad de realizar pedidos desde tu menú digital.`}
+                                {<FormattedMessage id="service7MsgL" />}
                             </p>
 
                             <Button variant="contained" color="primary" className="mt-4">
-                                ¡Pruébalo Gratis!
+                                <FormattedMessage id="tryFree" />
                             </Button>
                         </div>
                     </Grid>

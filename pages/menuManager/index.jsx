@@ -5,6 +5,8 @@ import MenuManager from '../../src/components/MenuManager/MenuManager';
 import { useQuery } from '@apollo/client';
 import { GET_USER_MENU } from '../../src/components/MenuManager/getUserMenu';
 import { useStateValue } from '../../src/State/StateProvider';
+import { FormattedMessage } from 'react-intl';
+
 const menuManager = (props) => {
     const dispatch = useStateValue()[1];
     const { loading, error, data, refetch } = useQuery(GET_USER_MENU, {
@@ -20,7 +22,12 @@ const menuManager = (props) => {
 
     if (error) return `Error! ${error.message}`;
 
-    if (loading) return <Applayout user={props.user}>Cargando...</Applayout>;
+    if (loading)
+        return (
+            <Applayout user={props.user}>
+                <FormattedMessage id="loading" />
+            </Applayout>
+        );
 
     if (data) {
         return (

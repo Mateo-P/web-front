@@ -3,6 +3,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Bill from './Bill/Bill';
 import useBills from '../../hooks/useBills';
 import EmptyItemsMessage from '../shared/EmptyItemsMessage';
+import { FormattedMessage } from 'react-intl';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -18,7 +19,7 @@ export default function BillList({ restaurant }) {
     const params = { states: ['CREATED'], restaurant };
     const { loading, error, bills } = useBills(params);
     const classes = useStyles();
-    if (loading) return <div>Cargando...</div>;
+    if (loading) return <div><FormattedMessage id="loading" /></div>;
 
     if (error) return `Error! ${error.message}`;
 

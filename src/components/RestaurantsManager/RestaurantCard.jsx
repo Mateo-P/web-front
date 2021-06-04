@@ -13,6 +13,9 @@ import { useStateValue } from '../../State/StateProvider';
 import EditAndDeleteMenu from '../shared/EditAndDeleteMenu';
 import Dialog from 'components/shared/Dialog';
 import CancelAcceptButtons from 'components/shared/Dialog/CancelAcceptButtons';
+import { FormattedMessage } from 'react-intl';
+import { useIntl } from 'react-intl';
+const intl = useIntl();
 
 const useStyles = makeStyles({
     root: {
@@ -113,7 +116,7 @@ export default function SimpleCard(props) {
             <CardContent>
                 <div className={classes.header}>
                     <Typography className={classes.title} color="textSecondary" gutterBottom>
-                        Nombre:
+                        <FormattedMessage id="name" />:
                     </Typography>
                     <EditAndDeleteMenu
                         handleOpenEdit={handleOpenEdit}
@@ -124,7 +127,7 @@ export default function SimpleCard(props) {
                     {props.name}
                 </Typography>
                 <Typography className={classes.title} color="textSecondary" gutterBottom>
-                    Dirección:
+                    <FormattedMessage id="address" />:
                 </Typography>
                 <div className={classes.header}>
                     <Typography variant="h5" component="h2">
@@ -148,7 +151,10 @@ export default function SimpleCard(props) {
                         handleChange={handleChange}
                         formValues={formValues}></Createform>
                 ) : (
-                    <Deleteform message={`Se eliminará ${props.name} de tus sedes`}></Deleteform>
+                    <Deleteform
+                        message={`${intl.formatMessage({ id: 'delete' })} ${
+                            props.name
+                        } ${intl.formatMessage({ id: 'fromS' })}`}></Deleteform>
                 )}
             </Dialog>
         </Card>

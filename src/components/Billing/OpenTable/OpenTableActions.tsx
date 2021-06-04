@@ -1,6 +1,7 @@
 import { MouseEvent } from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import { FormattedMessage } from 'react-intl';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -22,7 +23,7 @@ function OpenTableActions({ createBill }: Props) {
     return (
         <div className={classes.actions}>
             <Button onClick={createBill} variant="contained" color="primary">
-                Cerrar mesa
+            <FormattedMessage id="closeTable" />
             </Button>
         </div>
     );

@@ -11,6 +11,9 @@ import PageHeader from '../shared/PageHeader';
 import Dialog from 'components/shared/Dialog';
 import CancelAcceptButtons from 'components/shared/Dialog/CancelAcceptButtons';
 import EmptyItemsMessage from 'components/shared/EmptyItemsMessage';
+import { FormattedMessage } from 'react-intl';
+import { useIntl } from 'react-intl';
+const intl = useIntl();
 
 const initialValues = [
     { label: 'Nombre', value: 'name', error: null },
@@ -69,14 +72,22 @@ export default function RestaurantsManager({ email }) {
         setFormField(initialValues);
         setFormValues({});
     };
-    if (loading) return <div>Cargando...</div>;
+    if (loading)
+        return (
+            <div>
+                <FormattedMessage id="loading" />
+            </div>
+        );
 
     if (error) return `Error! ${error.message}`;
     if (data) {
         return (
             <div>
                 <PageHeader title="Sedes registradas">
-                    <AddButton title="Registrar nueva sede" onClick={() => setOpen(true)} />
+                    <AddButton
+                        title={intl.formatMessage({ id: 'registerS' })}
+                        onClick={() => setOpen(true)}
+                    />
                 </PageHeader>
 
                 <Grid container spacing={1}>
@@ -94,8 +105,8 @@ export default function RestaurantsManager({ email }) {
                         </>
                     ) : (
                         <EmptyItemsMessage
-                            text={'¡Aún no tienes sedes registradas!'}
-                            actionLabel="registrar mi primera sede"
+                            text={intl.formatMessage({ id: 'restMsg' })}
+                            actionLabel={intl.formatMessage({ id: 'restMsg3' })}
                             onAction={() => setOpen(true)}
                         />
                     )}
@@ -103,7 +114,7 @@ export default function RestaurantsManager({ email }) {
                 <Dialog
                     open={open}
                     onClose={handleClose}
-                    title={'Registrar sede'}
+                    title={intl.formatMessage({ id: 'restMsg3' })}
                     action={<CancelAcceptButtons onCancel={handleClose} onAccept={addCallback} />}>
                     <Createform
                         fields={formFields}

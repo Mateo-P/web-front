@@ -1,6 +1,7 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { FormattedMessage } from 'react-intl';
 
 import Typography from '@material-ui/core/Typography';
 const useStyles = makeStyles(({ ...theme }) => ({
@@ -71,15 +72,14 @@ const Intro3 = () => {
                                 style={{ fontWeight: '450' }}
                                 color="secondary"
                                 variant="h2">
-                                Dashboard de tu restaurante
+                                <FormattedMessage id="dshRestauran" />
                             </Typography>
 
                             <Typography
                                 style={{ fontWeight: '400' }}
                                 color="secondary"
                                 variant="h5">
-                                Mide el status de tus pedidos, tus finanzas, facturación, número de
-                                mesas atendidas, inventario y más.
+                                <FormattedMessage id="statsMsg" />
                             </Typography>
                         </Grid>
                         <Grid item md={7}>

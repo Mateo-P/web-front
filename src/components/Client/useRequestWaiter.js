@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { channels, pushData } from 'lib/pusher';
 import { useSnackbar } from 'notistack';
+import { useIntl } from 'react-intl';
+const intl = useIntl();
 
 const useRequestWaiter = (tableId, restaurantName, ownerEmail) => {
     const { enqueueSnackbar } = useSnackbar();
@@ -17,8 +19,8 @@ const useRequestWaiter = (tableId, restaurantName, ownerEmail) => {
     };
 
     useEffect(() => {
-        channel.bind('restaurant-accept-waiter', function () {
-            enqueueSnackbar('¡El mesero se encuentra en camino!', {
+        channel.bind(intl.formatMessage({ id: 'waiterInc' }), function () {
+            enqueueSnackbar('', {
                 variant: 'info',
                 preventDuplicate: true,
                 autoHideDuration: 10000

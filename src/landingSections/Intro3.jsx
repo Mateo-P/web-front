@@ -4,6 +4,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Image from 'next/image';
 import Typography from '@material-ui/core/Typography';
+import { FormattedMessage } from 'react-intl';
+
 const useStyles = makeStyles(({ ...theme }) => ({
     introWrapper: {
         padding: '5rem 0px !important',
@@ -39,7 +41,7 @@ const Intro3 = () => {
             <div className={classes.introWrapper}>
                 <div className={classes.container}>
                     <Typography className={classes.title} color="secondary" variant="h1">
-                        ¿Cómo funciona?
+                        <FormattedMessage id="howWorks" />
                     </Typography>
                     <Grid container spacing={3} justify="center" alignItems="center">
                         <Grid item md={6}>
@@ -56,18 +58,17 @@ const Intro3 = () => {
                         </Grid>
                         <Grid item md={6}>
                             <Fab href="/api/login" variant="extended" size="small" color="primary">
-                                Crea tu cuenta
+                                <FormattedMessage id="mkAccount" />
                             </Fab>
                             <Typography
                                 style={{ fontWeight: '500' }}
                                 color="secondary"
                                 variant="h2">
-                                Sube tu menú en minutos
+                                <FormattedMessage id="uploadMenu" />
                             </Typography>
 
                             <Typography color="secondary" variant="h5">
-                                Solo debes agregar cada ítem, su descripción y su foto. Dividir el
-                                menú por categorías y ¡Listo!
+                                <FormattedMessage id="extMsg" />
                             </Typography>
                         </Grid>
                     </Grid>

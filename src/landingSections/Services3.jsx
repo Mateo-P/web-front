@@ -1,6 +1,7 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { FormattedMessage } from 'react-intl';
 
 import Image from 'next/image';
 import { Typography, Button } from '@material-ui/core';
@@ -70,7 +71,7 @@ const Intro3 = () => {
                             />
 
                             <Typography className={classes.title} color="secondary" variant="h4">
-                                Crea tu menú virtual y empieza a usarlo hoy mismo
+                                <FormattedMessage id="mkMenu" />
                             </Typography>
 
                             <Typography
@@ -78,22 +79,21 @@ const Intro3 = () => {
                                 style={{ fontWeight: '300' }}
                                 color="secondary"
                                 variant="h5">
-                                ¡Que la pandemia no te quite mas clientes, acelera tus ordenes y
-                                aumenta tus ganancias!
+                                <FormattedMessage id="service3Msg2" />
                             </Typography>
                             <div className={classes.buttons}>
                                 <Button
                                     className={classes.button}
                                     variant="contained"
                                     color="primary">
-                                    Crea tu menú gratis hoy
+                                    <FormattedMessage id="service3btn" />
                                 </Button>
                                 <Button
                                     className={classes.button}
                                     href="/api/login"
                                     variant="contained"
                                     color="secondary">
-                                    Inicia Sesión
+                                    <FormattedMessage id="login" />
                                 </Button>
                             </div>
                         </Grid>

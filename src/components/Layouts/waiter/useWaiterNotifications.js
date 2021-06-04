@@ -4,6 +4,8 @@ import { FIND_TABLENAME_BY_ID } from '../ApplayoutQueries';
 import { useSnackbar } from 'notistack';
 import ToastActionButton from '../../Toast/ToastActionButton';
 import { channels, pushData } from 'lib/pusher';
+import { useIntl } from 'react-intl';
+const intl = useIntl();
 
 const useWaiterNotifications = (user) => {
     const [restaurant, setRestaurant] = useState(null);
@@ -40,7 +42,9 @@ const useWaiterNotifications = (user) => {
             if (useLazyQueryObject.data && restaurant) {
                 const { name, _id } = useLazyQueryObject.data.findTable.table;
 
-                const message = `${restaurant}: Mesero solicitado en ${name}`;
+                const message = `${restaurant}: ${intl.formatMessage({
+                    id: 'waiterRequested'
+                })} ${name}`;
 
                 const acceptWaiterCallback = () => {
                     pushData({

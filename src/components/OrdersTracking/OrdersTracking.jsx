@@ -14,6 +14,9 @@ import { useSnackbar } from 'notistack';
 import { CREATE_BILL } from '../Billing/createBill';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import BillDetail from '../Billing/Bill/BillDetail';
+import { useIntl } from 'react-intl';
+const intl = useIntl();
+
 const useStyles = makeStyles((theme) => ({
     root: {
         marginLeft: theme.spacing(2),
@@ -118,13 +121,13 @@ function OrdersTraking({ orders }) {
             <Dialog
                 open={open}
                 onClose={() => setOpen(false)}
-                title="Pedir cuenta"
+                title={intl.formatMessage({ id: 'requestBill' })}
                 action={
                     <CheckoutButton
                         disable={false}
                         basket={[]}
                         handleOrder={createBillCallback}
-                        textButton={'Pedir cuenta'}
+                        textButton={intl.formatMessage({ id: 'requestBill' })}
                     />
                 }>
                 <BillDetail

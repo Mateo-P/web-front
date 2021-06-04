@@ -5,6 +5,7 @@ import ItemEntry from './ItemEntry';
 import List from '@material-ui/core/List';
 import { useStateValue } from '../../../State/StateProvider';
 import Chip from 'components/shared/Chip';
+import { FormattedMessage } from 'react-intl';
 
 export default function ItemOption({ option, viewonly }) {
     const isOptionMandatory = option.min >= 1;
@@ -60,7 +61,10 @@ export default function ItemOption({ option, viewonly }) {
                 {isOptionMandatory && <Chip label="Obligatorio" width="20px" />}
             </Box>
             {isMaxBelowTotalEntries && (
-                <Typography variant="h6">Seleccione hasta {option.max} opciones</Typography>
+                <Typography variant="h6">
+                    <FormattedMessage id="selectTo" /> {option.max}{' '}
+                    <FormattedMessage id="options" />
+                </Typography>
             )}
             <List dense>
                 {option.entries.map((entry, i) => (

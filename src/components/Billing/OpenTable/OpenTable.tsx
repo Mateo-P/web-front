@@ -11,6 +11,9 @@ import TableOrders from '../OpenTable/TableOrders';
 import { formatCurrency } from '../../../shared/currencyFormat';
 import { Typography } from '@material-ui/core';
 import OpenTableActions from './OpenTableActions';
+import { useIntl } from 'react-intl';
+
+const intl = useIntl();
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -40,7 +43,7 @@ export default function OpenTable({ table }: Props) {
     const { enqueueSnackbar } = useSnackbar();
     const [createBill] = useMutation(CREATE_BILL, {
         onCompleted: () => {
-            enqueueSnackbar('Factura creada con exito!', {
+            enqueueSnackbar(intl.formatMessage({ id: 'billCreated' }), {
                 variant: 'success',
                 anchorOrigin: { vertical: 'top', horizontal: 'right' }
             });

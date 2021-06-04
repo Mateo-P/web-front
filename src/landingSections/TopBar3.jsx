@@ -7,6 +7,9 @@ import { Link } from 'react-scroll';
 import { useMediaQuery } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
 import { makeStyles } from '@material-ui/core/styles';
+import { FormattedMessage } from 'react-intl';
+import { LOCALES } from '../i18n/locales';
+
 const useStyles = makeStyles(({ spacing, palette }) => ({
     navigation: {
         width: '100%',
@@ -32,7 +35,7 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
         marginBottom: spacing(1)
     }
 }));
-const TopBar3 = () => {
+const TopBar3 = ({ setLanguage }) => {
     const classes = useStyles();
     const [isClosed, setIsClosed] = useState(true);
 
@@ -65,6 +68,10 @@ const TopBar3 = () => {
         setIsClosed(false);
     };
 
+    const handleChange = (event) => {
+        setLanguage(LOCALES[event.target.value]);
+    };
+
     return (
         <section
             className={classList({
@@ -82,31 +89,40 @@ const TopBar3 = () => {
                     <Link className="test6" to="1" spy={true} smooth={true} duration={500}>
                         <li className={option}>
                             <div to="intro3" onScroll={close}>
-                                Inicio
+                                <FormattedMessage id="home" />
                             </div>
                         </li>
                     </Link>
                     <Link className="test6" to="2" spy={true} smooth={true} duration={500}>
                         <li className={option}>
                             <div to="service3" onScroll={close}>
-                                ¿Cómo funciona?
+                                <FormattedMessage id="howWorks" />
                             </div>
                         </li>
                     </Link>
                     <Link className="test6" to="3" spy={true} smooth={true} duration={500}>
                         <li className={option}>
                             <div to="service5" onScroll={close}>
-                                Beneficios
+                                <FormattedMessage id="benefits" />
                             </div>
                         </li>
                     </Link>
                     <Link className="test6" to="5" spy={true} smooth={true} duration={500}>
                         <li className={option}>
                             <div to="pricing1" onScroll={close}>
-                                Precios
+                                <FormattedMessage id="prices" />
                             </div>
                         </li>
                     </Link>
+                    <div>
+                        <label>
+                            <FormattedMessage id="language" />
+                            <select onBlur={handleChange}>
+                                <option value="ENGLISH">English</option>
+                                <option value="SPANISH">Español</option>
+                            </select>
+                        </label>
+                    </div>
                 </ul>
                 <div className="m-auto" />
 

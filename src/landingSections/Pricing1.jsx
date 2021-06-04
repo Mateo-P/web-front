@@ -10,6 +10,8 @@ import clsx from 'clsx';
 import { useTheme } from '@material-ui/core/styles';
 import { useMediaQuery } from '@material-ui/core';
 import { formatCurrency } from 'shared/currencyFormat';
+import { FormattedMessage, useIntl } from 'react-intl';
+const intl = useIntl();
 const useStyles = makeStyles(({ spacing, palette }) => ({
     card: {
         padding: spacing(2),
@@ -99,25 +101,25 @@ const Pricing1 = () => {
     });
     const pricingList = [
         {
-            title: 'Básico',
+            title: intl.formatMessage({ id: 'basic' }),
             subtitle: 'Hasta 20 mesas',
             price: 180,
             allowedOfferIndexList: [0, 1, 2]
         },
         {
-            title: 'Medio',
+            title: intl.formatMessage({ id: 'medium' }),
             subtitle: 'De 20 a 100 mesas',
             price: 240,
             allowedOfferIndexList: [0, 1, 2, 3]
         },
         {
-            title: 'Grande',
+            title: intl.formatMessage({ id: 'big' }),
             subtitle: 'De 100 a 300 mesas',
             price: 370,
             allowedOfferIndexList: [0, 1, 2, 3, 4]
         },
         {
-            title: 'Cadena',
+            title: intl.formatMessage({ id: 'chain' }),
             subtitle: '301 mesas o más',
             price: 690,
             allowedOfferIndexList: [0, 1, 2, 3, 4, 5]
@@ -125,12 +127,12 @@ const Pricing1 = () => {
     ];
 
     const offerList = [
-        'Gestiona tu menú',
-        'Genera tus QRs',
-        'Procesa tus Ordenes',
-        'Personaliza tu marca',
-        'Atención especializada',
-        'QRs ilimitados'
+        intl.formatMessage({ id: 'manageMenu' }),
+        intl.formatMessage({ id: 'makeQr' }),
+        intl.formatMessage({ id: 'processOrders' }),
+        intl.formatMessage({ id: 'customB' }),
+        intl.formatMessage({ id: 'attEsp' }),
+        intl.formatMessage({ id: 'ilimtQr' })
     ];
 
     const getPriceList = () => {
@@ -156,11 +158,10 @@ const Pricing1 = () => {
         <div className={classes.container}>
             <div className={classes.priceTitle}>
                 <Typography variant="h3" gutterBottom>
-                    Precios
+                    <FormattedMessage id="prices" />
                 </Typography>
                 <Typography variant="h5" gutterBottom>
-                    Tenemos el mejor precio del mercado te invitamos a revisar y darte cuenta que
-                    así es
+                    <FormattedMessage id="bestPrices" />
                 </Typography>
                 <div className={priceOff}>
                     <Typography color="secondary" variant={isMobile ? 'h5' : 'h2'}>
@@ -224,7 +225,7 @@ const Pricing1 = () => {
                                         variant="outlined"
                                         size="large"
                                         width="100%">
-                                        ¡Elegir Plan!
+                                        <FormattedMessage id="shousePlan" />
                                     </Fab>
                                 </CardContent>
                             </Card>

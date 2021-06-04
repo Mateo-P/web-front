@@ -5,6 +5,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useTheme } from '@material-ui/core/styles';
 import { useMediaQuery } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
+import { FormattedMessage } from 'react-intl';
+
 const useStyles = makeStyles(({ ...theme }) => ({
     introWrapper: {
         padding: '5rem 0px !important',
@@ -65,18 +67,17 @@ const Intro3 = () => {
                         </Grid>
                         <Grid item md={6}>
                             <Typography style={{ fontWeight: '450' }} color="primary" variant="h5">
-                                Se usa desde cualquier navegador
+                                <FormattedMessage id="anyBrowser" />
                             </Typography>
                             <Typography
                                 style={{ fontWeight: '500' }}
                                 color="secondary"
                                 variant="h2">
-                                Tus clientes piden desde su celular
+                                <FormattedMessage id="fromCell" />
                             </Typography>
 
                             <Typography color="secondary" variant="h5">
-                                Y además tienen acceso al status del pedido mejorando así tu
-                                experiencia de cliente.
+                                <FormattedMessage id="service5Msg" />
                             </Typography>
                         </Grid>
                     </Grid>

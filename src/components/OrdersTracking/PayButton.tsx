@@ -1,5 +1,6 @@
 import BottomFixedButton from '../shared/BottomFixedButton';
 import { Typography } from '@material-ui/core';
+import { FormattedMessage } from 'react-intl';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -19,7 +20,7 @@ export default function Paybutton({ setOpen }) {
         <BottomFixedButton handleClick={() => setOpen(true)}>
             <div className={classes.payButton}>
                 <Typography variant="h5" gutterBottom>
-                    PEDIR CUENTA
+                <FormattedMessage id="requestBill" />
                 </Typography>
             </div>
         </BottomFixedButton>

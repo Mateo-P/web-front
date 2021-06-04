@@ -5,6 +5,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import useRequestWaiter from './useRequestWaiter';
 import useOwnerInfo from './useOwnerInfo';
+import { useIntl } from 'react-intl';
+const intl = useIntl();
 
 const useStyles = makeStyles((theme) => ({
     iconButton: {
@@ -45,7 +47,11 @@ export default function MenuHeader({ restaurantName = 'Restaurante', restaurantI
                 {isComing ? '🏃' : '☝🏼'}
             </Badge>
             <Typography variant="subtitle2" display="block">
-                {!raisedHand ? 'Mesero' : isComing ? 'En camino' : 'Solicitado'}
+                {!raisedHand
+                    ? intl.formatMessage({ id: 'waiter' })
+                    : isComing
+                    ? intl.formatMessage({ id: 'incoming' })
+                    : intl.formatMessage({ id: 'request' })}
             </Typography>
         </IconButton>
     );

@@ -15,6 +15,8 @@ import { ADD_TABLE } from '../addTable';
 import { DELETE_TABLE } from '../deleteTable';
 import { useStateValue } from '../../../State/StateProvider';
 import CancelAcceptButtons from 'components/shared/Dialog/CancelAcceptButtons';
+import { useIntl } from 'react-intl';
+const intl = useIntl();
 
 const useStyles = makeStyles({
     root: {
@@ -145,7 +147,7 @@ export default function Map({ tables, restaurantId }) {
         });
         handleClose();
 
-        enqueueSnackbar('Mesa eliminada', {
+        enqueueSnackbar(intl.formatMessage({ id: 'deleteTableMsg' }), {
             variant: 'error'
         });
     };
@@ -168,7 +170,7 @@ export default function Map({ tables, restaurantId }) {
         );
         handleClose();
         setEdit(false);
-        enqueueSnackbar('Mesa actualizada!', {
+        enqueueSnackbar(intl.formatMessage({ id: 'updateTableMsg' }), {
             variant: 'success'
         });
     };
@@ -182,7 +184,7 @@ export default function Map({ tables, restaurantId }) {
             }
         });
         handleClose();
-        enqueueSnackbar('Mesa creada!', {
+        enqueueSnackbar(intl.formatMessage({ id: 'createTableMsg' }), {
             variant: 'success'
         });
     };
@@ -211,7 +213,13 @@ export default function Map({ tables, restaurantId }) {
                     })}
             </div>
             <Dialog
-                title={deleteTable ? 'Eliminar Mesa' : edit ? 'Editar Mesa' : 'Crear Mesa'}
+                title={
+                    deleteTable
+                        ? intl.formatMessage({ id: 'deleteTable' })
+                        : edit
+                        ? intl.formatMessage({ id: 'edtiTable' })
+                        : intl.formatMessage({ id: 'createTable' })
+                }
                 open={openDialog}
                 onClose={handleClose}
                 action={
@@ -221,7 +229,9 @@ export default function Map({ tables, restaurantId }) {
                     />
                 }>
                 {deleteTable ? (
-                    <Deleteform message={`Se eliminará la mesa: ${selectedTable?.name}`} />
+                    <Deleteform
+                        message={`${intl.formatMessage({ id: 'deleteQ' })} ${selectedTable?.name}`}
+                    />
                 ) : (
                     <Createform
                         fields={formFields}

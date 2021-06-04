@@ -6,6 +6,7 @@ import RestaurantsUnavailable from '../../src/components/shared/RestaurantsUnava
 import { useQuery } from '@apollo/client';
 import { GET_USER_MENU } from '../../src/components/MenuManager/getUserMenu';
 import { useStateValue } from '../../src/State/StateProvider';
+import { FormattedMessage } from 'react-intl';
 
 const AvailabilityPage = (props) => {
     const dispatch = useStateValue()[1];
@@ -22,7 +23,12 @@ const AvailabilityPage = (props) => {
 
     if (error) return `Error! ${error.message}`;
 
-    if (loading) return <Applayout user={props.user}>Cargando...</Applayout>;
+    if (loading)
+        return (
+            <Applayout user={props.user}>
+                <FormattedMessage id="loading" />
+            </Applayout>
+        );
 
     return (
         <>

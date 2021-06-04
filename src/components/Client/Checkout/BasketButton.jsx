@@ -7,17 +7,18 @@ import Badge from '@material-ui/core/Badge';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import { formatCurrency } from '../../../shared/currencyFormat';
 import { useSnackbar } from 'notistack';
+import { useIntl, FormattedMessage } from 'react-intl';
 
 export default function BasketButton({ setOpen }) {
     const [{ basket }] = useStateValue();
-
+    const intl = useIntl();
     const { enqueueSnackbar } = useSnackbar();
 
     const isBasketEmpty = basket.length === 0;
 
     const handleClick = () => {
         if (isBasketEmpty) {
-            enqueueSnackbar('Debes agregar algo a tu orden!', {
+            enqueueSnackbar(intl.formatMessage({ id: 'needToAdd' }), {
                 variant: 'info',
                 anchorOrigin: { vertical: 'top', horizontal: 'center' }
             });
@@ -38,7 +39,11 @@ export default function BasketButton({ setOpen }) {
                 <ShoppingCartIcon />
             </Badge>
             <Typography variant="subtitle1" gutterBottom>
-                {isBasketEmpty ? '¿Qué vas a pedir hoy?' : 'ordenar'}
+                {isBasketEmpty ? (
+                    <FormattedMessage id="whatToOrder" />
+                ) : (
+                    <FormattedMessage id="order" />
+                )}
             </Typography>
             <Typography variant="subtitle1" gutterBottom>
                 {formatCurrency(getBasketTotal(basket))}

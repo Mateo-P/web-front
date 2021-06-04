@@ -3,6 +3,8 @@ import { useSnackbar } from 'notistack';
 import { useMutation } from '@apollo/client';
 import { UPDATE_BILL } from '../updateBill';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { useIntl } from 'react-intl';
+const intl = useIntl();
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -31,17 +33,17 @@ function BillActions({ _id, paymentMethod, tip, setTip }) {
                 }
             });
             if (state == 'PAID') {
-                enqueueSnackbar('Factura pagada!', {
+                enqueueSnackbar(intl.formatMessage({ id: 'billPaid' }), {
                     variant: 'success'
                 });
             } else if (state == 'DECLINED') {
-                enqueueSnackbar('Factura rechazada!', {
+                enqueueSnackbar(intl.formatMessage({ id: 'billRejected' }), {
                     variant: 'error'
                 });
             }
             setTip(0);
         } else {
-            enqueueSnackbar('Selecciona un metodo de pago!', {
+            enqueueSnackbar(intl.formatMessage({ id: 'payMethodQ' }), {
                 variant: 'warning'
             });
         }

@@ -1,6 +1,8 @@
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import { useIntl } from 'react-intl';
+const intl = useIntl();
 
 const useStyles = makeStyles((theme) => ({
     buttonCheckout: {
@@ -16,7 +18,11 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function CheckoutButton({ handleOrder, disable, textButton = '¡pedir ya!' }) {
+export default function CheckoutButton({
+    handleOrder,
+    disable,
+    textButton = intl.formatMessage({ id: 'orderNow' })
+}) {
     const classes = useStyles();
     const onOrdering = () => {
         handleOrder();

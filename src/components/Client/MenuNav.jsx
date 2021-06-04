@@ -5,6 +5,8 @@ import { Badge, Typography, IconButton, Box } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import { makeStyles } from '@material-ui/core/styles';
 import useLocalStorage from '../../hooks/useLocalStorage';
+import { FormattedMessage } from 'react-intl';
+
 const useStyles = makeStyles((theme) => ({
     box: {
         position: 'fixed',
@@ -47,7 +49,7 @@ export default function MenuNav({
                         {'🧾'}
                     </Badge>
                     <Typography variant="subtitle2" display="block">
-                        Ordenes
+                        <FormattedMessage id="orders" />
                     </Typography>
                 </IconButton>
             );

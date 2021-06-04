@@ -5,10 +5,10 @@ import useRestaurant from '../../hooks/useRestaurant';
 import PageHeader from '../shared/PageHeader';
 import EmptyItemsMessage from 'components/shared/EmptyItemsMessage';
 import { useRouter } from 'next/router';
-
+import { useIntl } from 'react-intl';
 export default function AvailabilityManager({ user }) {
     const { currentRestaurant } = useRestaurant();
-
+    const intl = useIntl();
     const router = useRouter();
 
     return (
@@ -22,8 +22,8 @@ export default function AvailabilityManager({ user }) {
                     <AvailabilityMenu restaurant={currentRestaurant} user={user} />
                 ) : (
                     <EmptyItemsMessage
-                        text="Para manejar las disponibilidades de tus ítems, primero debes crear tu menú."
-                        actionLabel="Ir a crear mi menú"
+                        text={intl.formatMessage({ id: 'availableManagerText' })}
+                        actionLabel={intl.formatMessage({ id: 'availableManagerLabel' })}
                         onAction={() => router.push('/menuManager')}
                     />
                 ))}

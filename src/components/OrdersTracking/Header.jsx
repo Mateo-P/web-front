@@ -3,6 +3,10 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuHeader from '../Client/MenuHeader';
 import { useRouter } from 'next/router';
 import { makeStyles } from '@material-ui/core/styles';
+import { useIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
+
+const intl = useIntl();
 
 const useStyles = makeStyles({
     box: {
@@ -22,13 +26,16 @@ function Header() {
     const backtoMenu = () => {
         return (
             <IconButton onClick={() => router.back()}>
-                <ArrowBackIosIcon /> Volver
+                <ArrowBackIosIcon /> <FormattedMessage id="back" />
             </IconButton>
         );
     };
     return (
         <div className={classes.box}>
-            <MenuHeader back={backtoMenu()} restaurantName={'Mis Ordenes'} />
+            <MenuHeader
+                back={backtoMenu()}
+                restaurantName={intl.formatMessage({ id: 'myOrders' })}
+            />
         </div>
     );
 }

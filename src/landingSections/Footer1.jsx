@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import InstagramIcon from '@material-ui/icons/Instagram';
 import WhatsAppIcon from '@material-ui/icons/WhatsApp';
 import clsx from 'clsx';
+import { FormattedMessage } from 'react-intl';
 
 const useStyles = makeStyles(({ palette }) => ({
     container: {
@@ -39,18 +40,17 @@ const Footer1 = () => {
                 <Grid container>
                     <Grid item lg={6} md={6} sm={12}>
                         <div className="p-8 h-full elevation-z3">
-                            <h4 className="text-20 mb-6 relative">Acerca de nosotros</h4>
+                            <h4 className="text-20 mb-6 relative">
+                                <FormattedMessage id="abourUs" />
+                            </h4>
                             <p className="text-inherit">
-                                <em>Compleat </em> nace con la intención de facilitar a los
-                                restaurantes su operación. Buscamos optimizar las productividad de
-                                nuestros clientes, desde el momento en que se escanea un QR hasta
-                                que se gestiona el invetario.
+                                <em>Compleat </em> <FormattedMessage id="aboutUsMsg" />
                             </p>
                             <Button
                                 href="https://instagram.com/compleat.com.co?igshid=9h1672tnnvcq"
                                 variant="contained"
                                 color="primary">
-                                Contáctanos
+                                <FormattedMessage id="contactUs" />
                             </Button>
                         </div>
                     </Grid>
@@ -81,7 +81,7 @@ const Footer1 = () => {
                     <Grid item lg={3} md={3} sm={12}>
                         <div className="p-8 h-full elevation-z3">
                             <h4 className="text-20 mb-6 relative">
-                                El mejor aliado de tu restaurante
+                                <FormattedMessage id="bestAl" />
                             </h4>
                         </div>
                     </Grid>
