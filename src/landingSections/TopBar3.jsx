@@ -117,7 +117,7 @@ const TopBar3 = ({ setLanguage }) => {
                     <div>
                         <label>
                             <FormattedMessage id="language" />
-                            <select onBlur={handleChange}>
+                            <select onChange={handleChange}>
                                 <option value="ENGLISH">English</option>
                                 <option value="SPANISH">Español</option>
                             </select>

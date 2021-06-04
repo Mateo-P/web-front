@@ -28,8 +28,7 @@ export default {
         howWorks: '¿Cómo funciona?',
         mkAccount: 'Crea tu cuenta',
         uploadMenu: 'Sube tu menú en minutos',
-        extMsg:
-            'Solo debes agregar cada ítem, su descripción y su foto. Dividir el menú por categorías y ¡Listo!',
+        extMsg: 'Solo debes agregar cada ítem, su descripción y su foto. Dividir el menú por categorías y ¡Listo!',
         prices: 'Precios',
         bestPrices:
             'Tenemos el mejor precio del mercado. Te invitamos a revisar y darte cuenta que así es',
@@ -93,6 +92,19 @@ export default {
         myOrders: 'Mis ordenes',
         back: 'Volver',
         requestBill: 'Pedir cuenta',
-        language: 'Idioma'
+        language: 'Idioma',
+        totalBill: 'Total de facturación',
+        avgDeliver: 'Promedio de entrega',
+        historyOrder: 'Historial de pedidos',
+        item: 'Articulo',
+        price: 'Precio',
+        ct: 'Cantidad',
+        table: 'Mesa',
+        deliverTime: 'Tiempo de entrega',
+        venues: 'Sedes',
+        tables: 'Mesas',
+        history: 'Historial',
+        billing: 'Facturacion',
+        totalTurnoever: 'Total facturado'
     }
 };

@@ -8,6 +8,7 @@ import HistoryList from './HistoryList';
 import useRestaurant from '../../hooks/useRestaurant';
 import PageHeader from '../shared/PageHeader';
 import { formatCurrency } from '../../shared/currencyFormat';
+import { useIntl } from 'react-intl';
 
 const GET_HISTORY_BY_RESTAURANTS = gql`
     query historyByRestaurant($date1: String, $date2: String, $restaurant: ID!) {
@@ -45,6 +46,8 @@ const useStyles = makeStyles({
 });
 
 function History() {
+    const intl = useIntl();
+
     const classes = useStyles();
     const { currentRestaurant } = useRestaurant();
     const [lowdate, setLowdate] = useState(new Date('2020-01-02'));
@@ -95,7 +98,7 @@ function History() {
 
     return (
         <>
-            <PageHeader title="Historial de pedidos">
+            <PageHeader title={intl.formatMessage({ id: 'historyOrder' })}>
                 <div className={classes.headerOptions}>
                     <Intervaldatepicker
                         uselowdate={[lowdate, setLowdate]}

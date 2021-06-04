@@ -28,8 +28,7 @@ export default {
         howWorks: 'How does it work?',
         mkAccount: 'Create your account',
         uploadMenu: 'Upload your menu in minutes',
-        extMsg:
-            'Just add each item, its description and its photo. Divide the menu by categories and that’s it!',
+        extMsg: 'Just add each item, its description and its photo. Divide the menu by categories and that’s it!',
         prices: 'Prices',
         bestPrices:
             'We have the best prices of the market. We invite you to verify it and realize that it is so',
@@ -93,6 +92,19 @@ export default {
         myOrders: 'My orders',
         back: 'Back',
         requestBill: 'Pedir cuenta',
-        language: 'Languaje'
+        language: 'Languaje',
+        totalBill: 'Total bill',
+        avgDeliver: 'Average deliver',
+        historyOrder: 'History orders',
+        item: 'Item',
+        price: 'Price',
+        ct: 'Cuantitty',
+        table: 'Table',
+        deliverTime: 'Deliver time',
+        venues: 'Venues',
+        tables: 'Tables',
+        history: 'History',
+        billing: 'Billing',
+        totalTurnoever: 'Total turnover'
     }
 };

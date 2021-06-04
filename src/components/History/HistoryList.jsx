@@ -3,16 +3,19 @@ import Paper from '@material-ui/core/Paper';
 import EnhancedTable from 'components/shared/EnhancedTable';
 import HistoryCards from './HistoryCards';
 import { formatCurrency } from 'shared/currencyFormat';
+import { useIntl } from 'react-intl';
 
 const headCells = [
-    { id: 'name', numeric: false, label: 'Item' },
-    { id: 'price', numeric: true, label: 'Precio' },
-    { id: 'quantity', numeric: true, label: 'Cantidad' },
-    { id: 'tableName', numeric: true, label: 'Mesa' },
-    { id: 'tiempo entrega', numeric: true, label: 'Tiempo entrega (min)' }
+    { id: 'name', numeric: false, label: useIntl().formatMessage({ id: 'item' }) },
+    { id: 'price', numeric: true, label: useIntl().formatMessage({ id: 'price' }) },
+    { id: 'quantity', numeric: true, label: useIntl().formatMessage({ id: 'ct' }) },
+    { id: 'tableName', numeric: true, label: useIntl().formatMessage({ id: 'table' }) },
+    { id: 'tiempo entrega', numeric: true, label: useIntl().formatMessage({ id: 'deliverTime' }) }
 ];
 
 export default function HistoryList({ rows, earnings, quantity, timeAverage }) {
+    const intl = useIntl();
+
     return (
         <>
             <HistoryCards
@@ -21,7 +24,11 @@ export default function HistoryList({ rows, earnings, quantity, timeAverage }) {
                 timeAverage={timeAverage}
             />
             <Paper style={{ marginTop: '8px', borderRadius: '12px' }}>
-                <EnhancedTable title="Historial de pedidos" rows={rows} headCells={headCells} />
+                <EnhancedTable
+                    title={intl.formatMessage({ id: 'historyOrder' })}
+                    rows={rows}
+                    headCells={headCells}
+                />
             </Paper>
         </>
     );
