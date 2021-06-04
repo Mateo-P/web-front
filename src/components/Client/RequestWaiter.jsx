@@ -6,7 +6,6 @@ import Badge from '@material-ui/core/Badge';
 import useRequestWaiter from './useRequestWaiter';
 import useOwnerInfo from './useOwnerInfo';
 import { useIntl } from 'react-intl';
-const intl = useIntl();
 
 const useStyles = makeStyles((theme) => ({
     iconButton: {
@@ -19,6 +18,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function MenuHeader({ restaurantName = 'Restaurante', restaurantId, tableId }) {
+    const intl = useIntl();
+
     const classes = useStyles();
     const [raisedHand, setRaisedhand] = useState(false);
 

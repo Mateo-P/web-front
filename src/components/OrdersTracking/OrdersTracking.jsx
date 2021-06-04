@@ -15,7 +15,6 @@ import { CREATE_BILL } from '../Billing/createBill';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import BillDetail from '../Billing/Bill/BillDetail';
 import { useIntl } from 'react-intl';
-const intl = useIntl();
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -25,6 +24,8 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 function OrdersTraking({ orders }) {
+    const intl = useIntl();
+
     const classes = useStyles();
     const [open, setOpen] = useState(false);
     const [tip, setTip] = useState(null);

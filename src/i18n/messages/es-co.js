@@ -105,6 +105,12 @@ export default {
         tables: 'Mesas',
         history: 'Historial',
         billing: 'Facturacion',
-        totalTurnoever: 'Total facturado'
+        totalTurnoever: 'Total facturado',
+        deleteCategory: 'Eliminar categoria',
+        editCategory: 'Editar categoria',
+        createItem: 'Crear item',
+        deleteCategoriaMsg: 'Se eliminará la categoria y consigo todos sus items',
+        accept: 'Aceptar',
+        cancel: 'Cancelar'
     }
 };

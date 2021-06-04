@@ -105,6 +105,12 @@ export default {
         tables: 'Tables',
         history: 'History',
         billing: 'Billing',
-        totalTurnoever: 'Total turnover'
+        totalTurnoever: 'Total turnover',
+        deleteCategory: 'Delete category',
+        editCategory: 'Edit category',
+        createItem: 'Create item',
+        deleteCategoriaMsg: 'It is going to be delete the category its items',
+        accept: 'Accept',
+        cancel: 'Cancel'
     }
 };

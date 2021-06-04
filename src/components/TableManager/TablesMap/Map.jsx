@@ -16,7 +16,6 @@ import { DELETE_TABLE } from '../deleteTable';
 import { useStateValue } from '../../../State/StateProvider';
 import CancelAcceptButtons from 'components/shared/Dialog/CancelAcceptButtons';
 import { useIntl } from 'react-intl';
-const intl = useIntl();
 
 const useStyles = makeStyles({
     root: {
@@ -31,6 +30,8 @@ const useStyles = makeStyles({
 });
 
 export default function Map({ tables, restaurantId }) {
+    const intl = useIntl();
+
     const classes = useStyles();
     const formFields = [{ label: 'Nombre', value: 'name' }];
     const [formValues, setFormValues] = useState({});

@@ -4,7 +4,6 @@ import { useMutation } from '@apollo/client';
 import { UPDATE_BILL } from '../updateBill';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useIntl } from 'react-intl';
-const intl = useIntl();
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -17,6 +16,8 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 function BillActions({ _id, paymentMethod, tip, setTip }) {
+    const intl = useIntl();
+
     const classes = useStyles();
 
     const [updateBill] = useMutation(UPDATE_BILL);

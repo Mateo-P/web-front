@@ -5,9 +5,11 @@ import { useSnackbar } from 'notistack';
 import ToastActionButton from '../../Toast/ToastActionButton';
 import { channels, pushData } from 'lib/pusher';
 import { useIntl } from 'react-intl';
-const intl = useIntl();
+import { FormattedMessage } from 'react-intl';
 
 const useWaiterNotifications = (user) => {
+    const intl = useIntl();
+
     const [restaurant, setRestaurant] = useState(null);
 
     const [findTable, useLazyQueryObject] = useLazyQuery(FIND_TABLENAME_BY_ID, {
@@ -57,7 +59,7 @@ const useWaiterNotifications = (user) => {
                 const action = (key) => {
                     return (
                         <ToastActionButton callback={acceptWaiterCallback} key={key}>
-                            aceptar
+                            <FormattedMessage id="accept" />
                         </ToastActionButton>
                     );
                 };

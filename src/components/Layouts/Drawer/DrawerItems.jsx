@@ -15,33 +15,32 @@ import FastfoodIcon from '@material-ui/icons/Fastfood';
 import { useRouter } from 'next/router';
 import List from '@material-ui/core/List';
 import { useIntl } from 'react-intl';
-const intl = useIntl();
 
-const sideMenu = [
-    {
-        path: '/restaurants',
-        name: intl.formatMessage({ id: 'venues' }),
-        icon: <RestaurantIcon />
-    },
-    { path: '/menuManager', name: 'Menú', icon: <MenuBookIcon /> },
-    {
-        path: '/availabilityManager',
-        name: 'Disponibilidades',
-        icon: <FastfoodIcon />
-    },
-    { path: '/tableManager', name: intl.formatMessage({ id: 'tables' }), icon: <PeopleIcon /> },
-    { path: '/qrs', name: 'QRs', icon: <Icon>qr_code</Icon> },
-    {
-        path: '/orderManager',
-        name: intl.formatMessage({ id: 'orders' }),
-        icon: <ShoppingCartIcon />
-    },
-    { path: '/billing ', name: intl.formatMessage({ id: 'billing' }), icon: <ReceiptIcon /> },
-    { path: '/history', name: intl.formatMessage({ id: 'history' }), icon: <AssessmentIcon /> }
-];
 export default function mainListItems() {
     const router = useRouter();
-
+    const intl = useIntl();
+    const sideMenu = [
+        {
+            path: '/restaurants',
+            name: intl.formatMessage({ id: 'venues' }),
+            icon: <RestaurantIcon />
+        },
+        { path: '/menuManager', name: 'Menú', icon: <MenuBookIcon /> },
+        {
+            path: '/availabilityManager',
+            name: 'Disponibilidades',
+            icon: <FastfoodIcon />
+        },
+        { path: '/tableManager', name: intl.formatMessage({ id: 'tables' }), icon: <PeopleIcon /> },
+        { path: '/qrs', name: 'QRs', icon: <Icon>qr_code</Icon> },
+        {
+            path: '/orderManager',
+            name: intl.formatMessage({ id: 'orders' }),
+            icon: <ShoppingCartIcon />
+        },
+        { path: '/billing ', name: intl.formatMessage({ id: 'billing' }), icon: <ReceiptIcon /> },
+        { path: '/history', name: intl.formatMessage({ id: 'history' }), icon: <AssessmentIcon /> }
+    ];
     return (
         <List>
             {sideMenu.map(({ path, name, icon }, i) => (

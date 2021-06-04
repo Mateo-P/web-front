@@ -13,6 +13,7 @@ import { useStateValue } from '../../State/StateProvider';
 import Dialog from 'components/shared/Dialog';
 import CancelAcceptButtons from 'components/shared/Dialog/CancelAcceptButtons';
 import ItemCrudForm from '../Item/ItemCrudForm';
+import { useIntl } from 'react-intl';
 
 const initialCategoryFields = [{ label: 'Nombre', value: 'name', error: null }];
 export default function MenuCRUD({
@@ -21,6 +22,8 @@ export default function MenuCRUD({
     availability = false,
     handleAvailableChange
 }) {
+    const intl = useIntl();
+
     const { categories, email } = user;
     const [{ itemFormFields, item }, dispatch] = useStateValue();
 
@@ -199,10 +202,10 @@ export default function MenuCRUD({
             <Dialog
                 title={
                     crud === 'DELETE'
-                        ? 'Eliminar categoria'
+                        ? intl.formatMessage({ id: 'deleteCategory' })
                         : crud === 'EDIT'
-                        ? 'Editar categoria'
-                        : 'Crear Item'
+                        ? intl.formatMessage({ id: 'editCategory' })
+                        : intl.formatMessage({ id: 'createItem' })
                 }
                 open={open}
                 onClose={handleClose}
@@ -219,7 +222,7 @@ export default function MenuCRUD({
                     />
                 }>
                 {crud === 'DELETE' ? (
-                    <Deleteform message={`Se eliminará la categoria y consigo todos sus items`} />
+                    <Deleteform message={intl.formatMessage({ id: 'deleteCategoriaMsg' })} />
                 ) : crud === 'EDIT' ? (
                     <Createform
                         fields={categoryFields}

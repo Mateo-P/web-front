@@ -13,7 +13,6 @@ import CancelAcceptButtons from 'components/shared/Dialog/CancelAcceptButtons';
 import EmptyItemsMessage from 'components/shared/EmptyItemsMessage';
 import { FormattedMessage } from 'react-intl';
 import { useIntl } from 'react-intl';
-const intl = useIntl();
 
 const initialValues = [
     { label: 'Nombre', value: 'name', error: null },
@@ -21,6 +20,8 @@ const initialValues = [
 ];
 
 export default function RestaurantsManager({ email }) {
+    const intl = useIntl();
+
     const [formFields, setFormField] = useState(initialValues);
     const [open, setOpen] = useState(false);
     const [formValues, setFormValues] = useState({});

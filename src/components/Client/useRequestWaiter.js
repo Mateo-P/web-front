@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import { channels, pushData } from 'lib/pusher';
 import { useSnackbar } from 'notistack';
 import { useIntl } from 'react-intl';
-const intl = useIntl();
 
 const useRequestWaiter = (tableId, restaurantName, ownerEmail) => {
+    const intl = useIntl();
+
     const { enqueueSnackbar } = useSnackbar();
     const [isComing, setIsComing] = useState(false);
 

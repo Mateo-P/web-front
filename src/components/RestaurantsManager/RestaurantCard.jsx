@@ -15,7 +15,6 @@ import Dialog from 'components/shared/Dialog';
 import CancelAcceptButtons from 'components/shared/Dialog/CancelAcceptButtons';
 import { FormattedMessage } from 'react-intl';
 import { useIntl } from 'react-intl';
-const intl = useIntl();
 
 const useStyles = makeStyles({
     root: {
@@ -37,6 +36,8 @@ export default function SimpleCard(props) {
         { label: 'Nombre', value: 'name' },
         { label: 'Dirección', value: 'address' }
     ];
+    const intl = useIntl();
+
     const [formValues, setFormValues] = useState({});
     const [{ user }] = useStateValue();
     const [open, setopen] = useState(false);
