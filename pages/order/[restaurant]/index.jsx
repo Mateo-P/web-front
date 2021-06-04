@@ -4,6 +4,7 @@ import { gql } from '@apollo/client';
 import { createApolloClientSSR } from '../../../apollo/client';
 import MenuNav from '../../../src/components/Client/MenuNav';
 import Menu from '../../../src/components/Client/Menu';
+import * as serviceWorkerRegistration from '../../../src/serviceWorkerRegistration';
 
 const GET_RESTAURANT_INFO_QUERY = gql`
     query GET_RESTAURANT_INFO_QUERY($restaurantId: ID!) {
@@ -72,4 +73,6 @@ export const getServerSideProps = async ({ query }) => {
         }
     };
 };
+serviceWorkerRegistration.register();
+
 export default index;

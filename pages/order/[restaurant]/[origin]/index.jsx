@@ -39,13 +39,24 @@ const GET_RESTAURANT_INFO_QUERY = gql`
 
 function Order(props) {
     const { data, restaurantId, originId } = props;
-    const categories = data.restaurant.categories;
+    const [categories, setCategories] = useState([]);
     const [location, setLocation] = useState(null);
     const router = useRouter();
     const filteredCategories = categories.filter((category) => category.items.length > 0);
     const dispatch = useStateValue()[1];
 
     useEffect(() => {
+
+        if (!navigator.onLine) {
+            if (localStorage.getItem("categories") === null) setCategories("Loading...");
+            else setCategories(JSON.parse(localStorage.getItem("categories")));
+          } else {
+            data.restaurant.categories.then((data) => {
+              setCategories(data);
+              localStorage.setItem("categories", JSON.stringify(data));
+            });
+          }
+
         getLocation();
         validateLocation();
         scrollSpy.update();
